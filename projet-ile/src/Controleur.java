@@ -12,13 +12,43 @@ public class Controleur implements Observateur {
 	private ArrayList<CarteTresor> pileTresor;
 	private ArrayList<CarteTresor> defausseTresor;
 	private int niveauDEau;
+	private int nbJoueursInitial;
 
 	// Constructor
 	Controleur() {
 
 		// Start by Player Settings
 		VueSettings vueSettings = new VueSettings();
+		vueSettings.addObservateur(this);
 		vueSettings.settinggame();
+	}
+
+	public boolean partieFinie(){
+		if(joueurs.size() < nbJoueursInitial){
+			System.out.println("Un joueur est mort");
+			return true;
+		}else if(niveauDEau >= 10){
+			System.out.println("Le niveau d'eau est trop élevé, tous les joueurs sont morts");
+			return true;
+		}else if(grille.getTuiles().get(16).getEtat() == Utils.EtatTuile.COULEE){
+			System.out.println("Il n'y a pas d'héliport pour s'échapper, tous les joueurs restent coincés");
+			return true;
+		}else if(grille.getTuiles().get(15).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(22).getEtat() == Utils.EtatTuile.COULEE ||
+				grille.getTuiles().get(0).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(6).getEtat() == Utils.EtatTuile.COULEE ||
+				grille.getTuiles().get(5).getEtat() == Utils.EtatTuile.COULEE &&grille.getTuiles().get(11).getEtat() == Utils.EtatTuile.COULEE ||
+				grille.getTuiles().get(8).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(18).getEtat() == Utils.EtatTuile.COULEE)
+		{
+			System.out.println("Un des trésors a coulé ");
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public void tourDuJeu(){
+		do{
+
+		}while(!partieFinie());
 	}
 
 	public Grille getGrille() {
@@ -29,37 +59,58 @@ public class Controleur implements Observateur {
 		return joueurs;
 	}
 
-	public CarteTresor piocherCarteTresor() {
-			throw new UnsupportedOperationException();
-	}
+	public void piocherCarteTresor(Aventurier a) {
+		CarteTresor carte;
+		carte = pileTresor.get(1);
+		pileTresor.remove(carte);
 
-	public void defausserCarteTresor(CarteTresor carte) {
-		// TODO - implement Controleur.defausserCarteTresor
-		throw new UnsupportedOperationException();
+		if ("CarteMonteeEaux".equals(carte.getType())) {
+			melangerPileInondation();
+			monterNiveauEau();
+			defausseTresor.add(carte);
+		} else {
+			a.ajouterCarteTresor(carte);
+		}
+
+	}
+	public void defausserCarteTresor(CarteTresor carte, Aventurier a) {
+		a.defausserCarteTresor(carte);
+		defausseTresor.add(carte);
+
 	}
 
 	public void piocherCarteInondation() {
-		// TODO - implement Controleur.piocherCarteInondation
-		throw new UnsupportedOperationException();
+
+		CarteInondation carte;
+		carte = pileInondation.get(1);
+		pileInondation.remove(carte);
+		defausseInondation.add(carte);
+		carte.inonder();
 	}
 
 	public Tuile getTuile(int coordX, int coordY) {
-		// TODO - implement Controleur.getTuile
-		throw new UnsupportedOperationException();
+		return grille.getGrille()[coordX][coordY];
 	}
+
 
 	public Aventurier getAventurier(String nom) {
 		return joueurs.get(nom);
 	}
 
 	public void melangerPileInondation() {
-		// TODO - implement Controleur.melangerPileInondation
-		throw new UnsupportedOperationException();
+		ArrayList<CarteInondation> pileMelange = new ArrayList<>();
+		pileMelange.addAll(defausseInondation);
+		pileMelange.addAll(pileInondation);
+		Collections.shuffle(pileMelange);
+		pileInondation = pileMelange;
 	}
 
 	public void melangerPileTresor() {
-		// TODO - implement Controleur.melangerPileTresor
-		throw new UnsupportedOperationException();
+		ArrayList<CarteTresor> pileMelange = new ArrayList<>();
+		pileMelange.addAll(defausseTresor);
+		pileMelange.addAll(pileTresor);
+		Collections.shuffle(pileMelange);
+		pileTresor = pileMelange;
 	}
 
 	public void afficherDeplacementsPossibles(Tuile tuiles) {
@@ -108,27 +159,52 @@ public class Controleur implements Observateur {
 		return niveauDEau;
 	}
 
-	@Override
+	public void monterNiveauEau(){
+		this.niveauDEau++;
+	}
+
+
 	public void traiterMessage(Message m) {
-		//Delcaration
+		if (null != m.type) //Delcaration
+			// Messages processing
+			switch (m.type) {
+				case DEMARRER_PARTIE:
+					nbJoueursInitial = m.joueurs.size();
+					break;
+				case DEPLACER:
 
-		// Messages processing
-		if (m.type == TypesMessage.DEMARRER_PARTIE) {
-
-		} else if (m.type == TypesMessage.DEPLACER) {
-
-		} else if (m.type == TypesMessage.ASSECHER) {
-
-		} else if (m.type == TypesMessage.ECHANGER) {
-
-		} else if (m.type == TypesMessage.RECUPERER_TRESOR) {
-
-		} else if (m.type == TypesMessage.UTILISER_CARTE_COURANT) {
-
-		} else if (m.type == TypesMessage.UTILISER_CARTE_NON_COURANT) {
-
-		} else if (m.type == TypesMessage.FIN_TOUR) {
-
-		}
+					break;
+				case ASSECHER:
+					break;
+				case ECHANGER:
+					break;
+				case RECUPERER_TRESOR:
+					break;
+				case UTILISER_CARTE_COURANT:
+					break;
+				case UTILISER_CARTE_NON_COURANT:
+					break;
+				case FIN_TOUR:
+					break;
+				default:
+					break;
+			}
 	}
 }
+/*
+criteres
+
+13 points dossier
+7 pts demo
+
+1 pt qualité rapport
+1 pt lisibilité diagramme
+1 pt diag séq trou av
+4 pts diag se déplacer
+2 pts diag seq assecher
+4 pts diag classe
+
+4 pts code conforme conception
+1 pt preparation demo
+2 pt demo pt de vue deplacement / assechement
+*/

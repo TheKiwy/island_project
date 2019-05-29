@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VueGrille extends Obseve{
@@ -32,19 +33,18 @@ public class VueGrille extends Obseve{
 
 		System.out.println();
 		System.out.println("Voicie le nom de chaque lieux de l'île");
-		for (int i=0; i<=grille.getTuiles().lenght) {
-			System.out.println();
-		}
+		int j = 0;
+
+
+
 	}
 
 	public void cacher() {
-		// TODO - implement VueGrille.cacher
-		throw new UnsupportedOperationException();
+
 	}
 
-	public void afficherDeplacementsPossibles(Tuile tuiles) {
-		// TODO - implement VueGrille.afficherDeplacementsPossibles
-		throw new UnsupportedOperationException();
+	public void afficherDeplacementsPossibles(ArrayList<Tuile> tuiles) {
+
 	}
 
 }

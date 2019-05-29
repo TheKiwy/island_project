@@ -10,5 +10,7 @@ public enum Role {
 	recupZephyr,
 	recupCristal,
 	recupCalice,
-	heliport, porteNoire, porteGrise,
+	heliport,
+	porteNoire,
+	porteGrise,
 }

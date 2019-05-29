@@ -4,13 +4,13 @@ public class Tuile {
 
 	private Role role;
 	private ArrayList<Aventurier> listeAventuriers;
-	private EtatTuile etat;
+	private Utils.EtatTuile etat;
 	private String nom;
 	private int coordX;
 	private int coordY;
 
 	public Tuile(Role role, String nom){
-		this.etat = EtatTuile.surface;
+		this.etat = Utils.EtatTuile.ASSECHEE;
 		this.role = role;
 		this.nom = nom;
 
@@ -61,6 +61,9 @@ public class Tuile {
 	public Utils.EtatTuile getEtat() {
 		return this.etat;
 	}
-}
 
+	public void setCoord(int i, int j) {
+		this.coordX = i;
+		this.coordY = j;
+	}
 }

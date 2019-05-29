@@ -7,8 +7,7 @@ public class Message {
     public TypesMessage type;
 
     // Player Settings
-    public int nbP;
-    public HashMap<String, String> joueurs;
+    public HashMap<String, Integer> joueurs;
 
     // Player Actions
     public String joueur;

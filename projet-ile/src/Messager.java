@@ -1,18 +1,16 @@
-public class Messager extends Aventurier {
 
-	/**
-	 * 
-	 * @param joueur
-	 * @param carte
-	 */
-	public void donnerCarte(Aventurier joueur, CarteTresor carte) {
-		// TODO - implement Messager.donnerCarte
-		throw new UnsupportedOperationException();
+import java.util.ArrayList;
+
+public class Messager extends Aventurier {
+	Messager(String nom, Tuile position, Utils.Pion pion) {
+		super(nom, position, pion);
 	}
 
+
+	// dans contoleur faire un getRole() si c messager alors receveursPossibles = tous sauf joueur courant
+
 	public String getRole() {
-		// TODO - implement Messager.getRole
-		throw new UnsupportedOperationException();
+		return "Messager";
 	}
 
 }

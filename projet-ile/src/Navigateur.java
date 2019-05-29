@@ -1,18 +1,15 @@
 public class Navigateur extends Aventurier {
 
-	/**
-	 * 
-	 * @param joueur
-	 * @param tuile
-	 */
-	public void deplacerAutreVers(Aventurier joueur, Tuile tuile) {
-		// TODO - implement Navigateur.deplacerAutreVers
-		throw new UnsupportedOperationException();
+	Navigateur(String nom, Tuile position, Utils.Pion pion) {
+		super(nom, position, pion);
 	}
 
+//	public void deplacerAutreVers(Aventurier joueur, Tuile tuile) {     ==>> Méthode du controleur ??
+//
+//	}
+
 	public String getRole() {
-		// TODO - implement Navigateur.getRole
-		throw new UnsupportedOperationException();
+		return "Navigateur";
 	}
 
 }
