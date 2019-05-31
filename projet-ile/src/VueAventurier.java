@@ -42,7 +42,7 @@ public class VueAventurier extends Obseve{
 		} else if (action == 4) {
 			m.type = TypesMessage.RECUPERER_TRESOR;
 		} else if (action == 5) {
-			System.out.println("L'avanturier qui veut joué la carte, est-il joueur ? oui/non");
+			System.out.println("L'avanturier qui veut joué la carte, est-il le joueur  actuel ? oui/non");
 			if (entre.nextLine() == "oui") {
 				m.type = TypesMessage.UTILISER_CARTE_COURANT;
 				m.joueur = a.getNom();

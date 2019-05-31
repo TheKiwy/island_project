@@ -3,11 +3,8 @@ import java.util.Scanner;
 
 public class VueSettings extends Obseve {
 
-    public VueSettings() {
-    }
-
     public void settinggame() {
-        // Console view
+            // Console view
         // Declaration
         Scanner entre = new Scanner(System.in);
         Scanner entre2 = new Scanner(System.in);

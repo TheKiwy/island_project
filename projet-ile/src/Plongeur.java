@@ -68,7 +68,8 @@ public class Plongeur extends Aventurier {
 		ArrayList<Tuile> listeTuiles = new ArrayList<>();
 
 		if (x != 0) {
-			Tuile tuileG = null;// recup case x - 1, y
+			Tuile tuileG = null;
+			tuileG = g.getTuileCoord(x-1, y); // recup case x - 1, y
 			if (tuileG != null) {
 				if (tuileG.getEtat() != Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileG);
@@ -77,7 +78,8 @@ public class Plongeur extends Aventurier {
 		}
 
 		if (x != 5) {
-			Tuile tuileD = null;// recup case x + 1, y
+			Tuile tuileD = null;
+			tuileD = g.getTuileCoord(x+1, y); // recup case x + 1, y
 			if (tuileD != null) {
 				if (tuileD.getEtat() != Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileD);
@@ -86,7 +88,8 @@ public class Plongeur extends Aventurier {
 		}
 
 		if (y != 0) {
-			Tuile tuileH = null;// recup case x, y - 1
+			Tuile tuileH = null;
+			tuileH = g.getTuileCoord(x, y-1); // recup case x, y - 1
 			if (tuileH != null) {
 				if (tuileH.getEtat() != Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileH);
@@ -95,7 +98,8 @@ public class Plongeur extends Aventurier {
 		}
 
 		if (y != 5) {
-			Tuile tuileB = null;// recup case x, y + 1
+			Tuile tuileB = null;
+			tuileB = g.getTuileCoord(x, y+1); // recup case x, y + 1
 			if (tuileB != null) {
 				if (tuileB.getEtat() != Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileB);
@@ -116,28 +120,32 @@ public class Plongeur extends Aventurier {
 		ArrayList<Tuile> listeTuiles = new ArrayList<>();
 
 		if (x != 0) {
-			Tuile tuileG = null;// recup case x - 1, y
+			Tuile tuileG = null;
+			tuileG = g.getTuileCoord(x-1, y); // recup case x - 1, y
 			if (tuileG != null) {
 				listeTuiles.add(tuileG);
 			}
 		}
 
 		if (x != 5) {
-			Tuile tuileD = null;// recup case x + 1, y
+			Tuile tuileD = null;
+			tuileD = g.getTuileCoord(x+1, y); // recup case x + 1, y
 			if (tuileD != null) {
 				listeTuiles.add(tuileD);
 			}
 		}
 
 		if (y != 0) {
-			Tuile tuileH = null;// recup case x, y - 1
+			Tuile tuileH = null;
+			tuileH = g.getTuileCoord(x, y-1); // recup case x, y - 1
 			if (tuileH != null) {
 				listeTuiles.add(tuileH);
 			}
 		}
 
 		if (y != 5) {
-			Tuile tuileB = null;// recup case x, y + 1
+			Tuile tuileB = null;
+			tuileB = g.getTuileCoord(x, y+1); // recup case x, y + 1
 			if (tuileB != null) {
 				listeTuiles.add(tuileB);
 			}
@@ -152,7 +160,8 @@ public class Plongeur extends Aventurier {
 		ArrayList<Tuile> listeTuiles = new ArrayList<>();
 
 		if (x != 0) {
-			Tuile tuileG = null;// recup case x - 1, y
+			Tuile tuileG = null;
+			tuileG = g.getTuileCoord(x-1, y); // recup case x - 1, y
 			if (tuileG != null) {
 				if (tuileG.getEtat() == Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileG);
@@ -161,7 +170,8 @@ public class Plongeur extends Aventurier {
 		}
 
 		if (x != 5) {
-			Tuile tuileD = null;// recup case x + 1, y
+			Tuile tuileD = null;
+			tuileD = g.getTuileCoord(x+1, y); // recup case x + 1, y
 			if (tuileD != null) {
 				if (tuileD.getEtat() == Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileD);
@@ -170,7 +180,8 @@ public class Plongeur extends Aventurier {
 		}
 
 		if (y != 0) {
-			Tuile tuileH = null;// recup case x, y - 1
+			Tuile tuileH = null;
+			tuileH = g.getTuileCoord(x, y-1); // recup case x, y - 1
 			if (tuileH != null) {
 				if (tuileH.getEtat() == Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileH);
@@ -179,7 +190,8 @@ public class Plongeur extends Aventurier {
 		}
 
 		if (y != 5) {
-			Tuile tuileB = null;// recup case x, y + 1
+			Tuile tuileB = null;
+			tuileB = g.getTuileCoord(x, y+1); // recup case x, y + 1
 			if (tuileB != null) {
 				if (tuileB.getEtat() == Utils.EtatTuile.ASSECHEE) {
 					listeTuiles.add(tuileB);

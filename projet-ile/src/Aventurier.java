@@ -19,7 +19,7 @@ public abstract class Aventurier {
 	private void setNom(String nom) { this.nom = nom;
 	}
 
-	private void setPosition(Tuile position) {this.position = position;
+	public void setPosition(Tuile position) {this.position = position;
 	}
 
 	private void setPion(Utils.Pion pion) {this.pion = pion;
@@ -41,7 +41,8 @@ public abstract class Aventurier {
 		ArrayList<Tuile> listeTuiles = new ArrayList<>();
 
 		if (x != 0) {
-			Tuile tuileG = null;// recup case x - 1, y
+			Tuile tuileG = null;
+			tuileG = g.getTuileCoord(x-1, y); // recup case x - 1, y
 			if (tuileG != null) {
 				if (tuileG.getEtat() != Utils.EtatTuile.COULEE) {
 					listeTuiles.add(tuileG);
@@ -50,7 +51,8 @@ public abstract class Aventurier {
 		}
 
 		if (x != 5) {
-			Tuile tuileD = null;// recup case x + 1, y
+			Tuile tuileD = null;
+			tuileD = g.getTuileCoord(x+1, y); // recup case x + 1, y
 			if (tuileD != null) {
 				if (tuileD.getEtat() != Utils.EtatTuile.COULEE) {
 					listeTuiles.add(tuileD);
@@ -59,7 +61,8 @@ public abstract class Aventurier {
 		}
 
 		if (y != 0) {
-			Tuile tuileH = null;// recup case x, y - 1
+			Tuile tuileH = null;
+			tuileH = g.getTuileCoord(x, y-1); // recup case x, y - 1
 			if (tuileH != null) {
 				if (tuileH.getEtat() != Utils.EtatTuile.COULEE) {
 					listeTuiles.add(tuileH);
@@ -68,7 +71,8 @@ public abstract class Aventurier {
 		}
 
 		if (y != 5) {
-			Tuile tuileB = null;// recup case x, y + 1
+			Tuile tuileB = null;
+			tuileB = g.getTuileCoord(x, y+1); // recup case x, y + 1
 			if (tuileB != null) {
 				if (tuileB.getEtat() != Utils.EtatTuile.COULEE) {
 					listeTuiles.add(tuileB);
@@ -79,13 +83,14 @@ public abstract class Aventurier {
 		return listeTuiles;
 	}
 
-	public ArrayList<Tuile> getAssechementsPossibles() {
+	public ArrayList<Tuile> getAssechementsPossibles(Grille g) {
 		int x = this.position.getCordX();
 		int y = this.position.getCordY();
 		ArrayList<Tuile> listeTuiles = new ArrayList<>();
 
 		if (x != 0) {
-			Tuile tuileG = null;// recup case x - 1, y
+			Tuile tuileG = null;
+			tuileG = g.getTuileCoord(x-1, y); // recup case x - 1, y
 			if (tuileG != null) {
 				if (tuileG.getEtat() != Utils.EtatTuile.INONDEE) {
 					listeTuiles.add(tuileG);
@@ -94,7 +99,8 @@ public abstract class Aventurier {
 		}
 
 		if (x != 5) {
-			Tuile tuileD = null;// recup case x + 1, y
+			Tuile tuileD = null;
+			tuileD = g.getTuileCoord(x+1, y); // recup case x + 1, y
 			if (tuileD != null) {
 				if (tuileD.getEtat() != Utils.EtatTuile.INONDEE) {
 					listeTuiles.add(tuileD);
@@ -103,7 +109,8 @@ public abstract class Aventurier {
 		}
 
 		if (y != 0) {
-			Tuile tuileH = null;// recup case x, y - 1
+			Tuile tuileH = null;
+			tuileH = g.getTuileCoord(x, y-1); // recup case x, y - 1
 			if (tuileH != null) {
 				if (tuileH.getEtat() != Utils.EtatTuile.INONDEE) {
 					listeTuiles.add(tuileH);
@@ -112,7 +119,8 @@ public abstract class Aventurier {
 		}
 
 		if (y != 5) {
-			Tuile tuileB = null;// recup case x, y + 1
+			Tuile tuileB = null;
+			tuileB = g.getTuileCoord(x, y+1); // recup case x, y + 1
 			if (tuileB != null) {
 				if (tuileB.getEtat() == Utils.EtatTuile.INONDEE) {
 					listeTuiles.add(tuileB);
@@ -157,25 +165,29 @@ public abstract class Aventurier {
 		defausse.add(carte);
 	}
 
-	public void recupererTresor() {
+	public void recupererTresor(Tresor tresor) {
 
 		ArrayList<CarteTresor> morceauxTresors = new ArrayList<>();
-		Boolean memeType = true;
 		int i=0;
 		for (CarteTresor carte: cartes) {
-			if (carte.getType() == "MorceauTresor") {
+			if (carte.getType() == "CarteMorceauTresor") {
 				morceauxTresors.add(carte);
 			}
 		}
-
-
+		for (CarteTresor carte : morceauxTresors) {
+			if (carte.getTypeTresor() == tresor.getType()){
+				i += 1;
+			}
 		}
+		if (i >= 4){
+			this.tresorsPosseder.add(tresor);
+		}
+
+	}
 
 
 	public boolean inventairePlein () {
 		return cartes.size() >=5;
 	}
 
-	public void defausserCarteTresor(CarteTresor carte) {
-	}
 }

@@ -74,7 +74,7 @@ public class Controleur implements Observateur {
 
 	}
 	public void defausserCarteTresor(CarteTresor carte, Aventurier a) {
-		a.defausserCarteTresor(carte);
+		a.defausserCarteTresor(carte, defausseTresor);
 		defausseTresor.add(carte);
 
 	}
@@ -169,7 +169,9 @@ public class Controleur implements Observateur {
 			// Messages processing
 			switch (m.type) {
 				case DEMARRER_PARTIE:
-					nbJoueursInitial = m.joueurs.size();
+					Grille grille = new Grille();
+					VueGrille vueGrille = new VueGrille();
+					vueGrille.afficher(grille);
 					break;
 				case DEPLACER:
 

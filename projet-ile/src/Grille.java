@@ -75,9 +75,9 @@ public class Grille {
 		ArrayList<Tuile> tuiles = new ArrayList<>();
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < 6; j++) {
-				tuile = grille[i][j];
-				tuiles.add(grille[i][j]);
-
+				if (grille[i][j] != null) {
+					tuiles.add(grille[i][j]);
+				}
 			}
 		}
 		return tuiles;
@@ -85,6 +85,10 @@ public class Grille {
 
 	public Tuile[][] getGrille(){
 		return this.grille;
+	}
+
+	public Tuile getTuileCoord(int x,int y) {
+		return grille[x][y];
 	}
 
 	public ArrayList<Tuile> getTuilesAvecJoueurs() {
