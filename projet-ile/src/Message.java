@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Message {
@@ -11,4 +10,8 @@ public class Message {
 
     // Player Actions
     public String joueur;
+
+    // Player deplacement
+    public Tuile tuile;
+    public Aventurier joueurCourant;
 }

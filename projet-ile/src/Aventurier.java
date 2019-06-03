@@ -8,21 +8,17 @@ public abstract class Aventurier {
 	private String nom;
 	private Utils.Pion pion;
 
-	Aventurier(String nom, Tuile position, Utils.Pion pion) {
-		setNom(nom);
-		setPosition(position);
-		setPion(pion);
+	Aventurier() {
 		cartes = new ArrayList<>();
 		tresorsPosseder = new ArrayList<>();
 	}
-
-	private void setNom(String nom) { this.nom = nom;
+	public void setNom(String nom) { this.nom = nom;
 	}
 
 	public void setPosition(Tuile position) {this.position = position;
 	}
 
-	private void setPion(Utils.Pion pion) {this.pion = pion;
+	public void setPion(Utils.Pion pion) {this.pion = pion;
 
 	}
 
@@ -31,9 +27,8 @@ public abstract class Aventurier {
 		this.position = tuile;
 	}
 
-	public void assecher(int ligne, int colonne) {
-		// a faire apres
-	}
+	public void assecher(Tuile tuile) {
+		tuile.assecher();	}
 
 	public ArrayList<Tuile> getDeplacementsPossibles(Grille g) {
 		int x = this.position.getCordX();

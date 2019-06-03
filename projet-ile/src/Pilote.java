@@ -1,9 +1,9 @@
 public class Pilote extends Aventurier {
 
-    Pilote(String nom, Tuile position, Utils.Pion pion) {
-            super(nom, position, pion);
+    Pilote() {
+        super();
+        super.setPion(Utils.Pion.BLEU);
     }
-
     /**
      *
      * @param tuile

@@ -103,4 +103,29 @@ public class Grille {
 		return tuilesJoueurs;
 	}
 
+	public Tuile getTuileUnique(Role role) {
+		for (Tuile[] ligneTuiles : grille) {
+			for (Tuile tuile : ligneTuiles) {
+				if (tuile.getRole() == role) {
+					return tuile;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public ArrayList<Tuile> getTuileTresor(Role role) {
+		ArrayList<Tuile> listeTuiles = new ArrayList<>();
+		for (Tuile[] ligneTuiles : grille) {
+			for (Tuile tuile : ligneTuiles) {
+				if (tuile.getRole() == role) {
+					listeTuiles.add(tuile);
+				}
+			}
+		}
+
+		return listeTuiles;
+	}
+
 }

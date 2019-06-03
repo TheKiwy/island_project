@@ -39,16 +39,75 @@ public class VueGrille extends Obseve{
 		}
 	}
 
-	public void cacher() {
-
-	}
-
-	public void afficherDeplacementsPossibles(ArrayList<Tuile> tuiles) {
+	public void afficherDeplacementsPossibles(ArrayList<Tuile> tuiles, Grille grille) {
+			// Declaration
 		Scanner entre = new Scanner(System.in);
+		Message m = new Message();
+		int j = 0;
+		int choice;
 
+			// Instruction
+		// Display possible displacement
+		System.out.println("Voicie les numéros de case disponible pour le deplacement:");
+		for (int i=0; i<grille.getTuiles().size();i++) {
+			if (grille.getTuiles().get(i) == tuiles.get(j)) {
+				System.out.println(j+1 +": Vers la case"+ i + grille.getTuiles().get(i));
+				j++;
+			}
+		}
 
-		System.out.println("Veuillez indiquez le numeros de la vers le quelle vous voulez vous deplacer: ");
+		// User choice
+		do {
+			do {
+				System.out.println("Veuillez indiquez le numeros de la vers le quelle vous voulez vous deplacer: ");
+				choice = entre.nextInt();
+			} while (choice < 0 && choice >= tuiles.size());
+			System.out.println();
+			System.out.println("Votre choix est de ce déplacer vers :" + tuiles.get(choice).getNom());
+			System.out.println("Êtes vous sûr(e) ? oui/non");
+		} while (entre.nextLine() != "oui");
+
+		m.type = TypesMessage.DEPLACER_VERS;
+		m.tuile = tuiles.get(choice);
+		notifyObservateur(m);
 
 	}
 
+	public void afficherAssechementsPossibles(ArrayList<Tuile> tuiles, Grille grille) {
+		// Declaration
+		Scanner entre = new Scanner(System.in);
+		Message m = new Message();
+		int j = 0;
+		int choice;
+
+		// Instruction
+		// Display possible displacement
+		System.out.println("Voicie les numéros de case disponible pour le deplacement:");
+		for (int i=0; i<grille.getTuiles().size();i++) {
+			if (grille.getTuiles().get(i) == tuiles.get(j)) {
+				System.out.println(j+1 +": Vers la case"+ i + grille.getTuiles().get(i));
+				j++;
+			}
+		}
+
+		// User choice
+		do {
+			do {
+				System.out.println("Veuillez indiquez le numeros de la vers le quelle vous voulez vous assécher: ");
+				choice = entre.nextInt();
+			} while (choice < 0 && choice >= tuiles.size());
+			System.out.println();
+			System.out.println("Votre choix est de ce déplacer vers :" + tuiles.get(choice).getNom());
+			System.out.println("Êtes vous sûr(e) ? oui/non");
+		} while (entre.nextLine() != "oui");
+
+		m.type = TypesMessage.ASSECHER_VERS;
+		m.tuile = tuiles.get(choice);
+		notifyObservateur(m);
+
+	}
+
+	public void cacher() {
+		// For graphic view
+	}
 }

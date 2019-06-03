@@ -45,8 +45,63 @@ public class Controleur implements Observateur {
 		}
 	}
 
-	public void tourDuJeu(){
+	public void partieEnCours(){
+
+		boolean effectuerAction;
+		Scanner scan = new Scanner (System.in);
+		int nbActions = 0;
+
 		do{
+			effectuerAction = true;
+
+			for(int i = 0; i < nbJoueursInitial-1; i++){
+
+				Aventurier a = joueurs.get(i);
+
+				System.out.println("Voulez-vous effectuer une action? oui/non ");
+				scan.nextLine();
+
+				/*Effectuer de 0 à 2 actions*/
+
+				if("oui".equals(scan.toString())){
+					nbActions++;
+
+					do{
+
+						vueAventurier.afficher(a);
+						System.out.println("Souhaitez-vous effectuer une autre action? oui/non");
+
+						if("non".equals(scan.toString())){
+							effectuerAction=false;
+						}else if("oui".equals(scan.toString())){
+							if(nbActions < 3){
+								nbActions++;
+							}else{
+								effectuerAction=false;
+								System.out.println("Vous avez atteint le nombre maximal d'actions dans le meme tour");
+							}
+						};
+
+					}while(effectuerAction);
+
+				}else if("non".equals(scan.toString())){
+					i++;
+					break;
+				}
+
+				/*Tirer 2 cartes trésor*/
+
+				for(int j = 0; j < 1; j++){
+					piocherCarteTresor(a);
+				}
+
+				/*Tirer 2 cartes inondation*/
+
+				for(int k = 0; k < 1; k++){
+					piocherCarteInondation();
+				}
+
+			}
 
 		}while(!partieFinie());
 	}
@@ -70,12 +125,14 @@ public class Controleur implements Observateur {
 			defausseTresor.add(carte);
 		} else {
 			a.ajouterCarteTresor(carte);
+			carte.setPropriétaire(a);
 		}
+
 
 	}
 	public void defausserCarteTresor(CarteTresor carte, Aventurier a) {
 		a.defausserCarteTresor(carte, defausseTresor);
-		defausseTresor.add(carte);
+
 
 	}
 
@@ -111,19 +168,6 @@ public class Controleur implements Observateur {
 		pileMelange.addAll(pileTresor);
 		Collections.shuffle(pileMelange);
 		pileTresor = pileMelange;
-	}
-
-	public void afficherDeplacementsPossibles(Tuile tuiles) {
-		// TODO - implement Controleur.afficherDeplacementsPossibles
-		throw new UnsupportedOperationException();
-	}
-
-	public VueGrille getVueGrille() {
-		return this.vueGrille;
-	}
-
-	public VueAventurier getVueAventurier() {
-		return this.vueAventurier;
 	}
 
 	public int pileTresorVide() {
@@ -169,14 +213,82 @@ public class Controleur implements Observateur {
 			// Messages processing
 			switch (m.type) {
 				case DEMARRER_PARTIE:
-					Grille grille = new Grille();
-					VueGrille vueGrille = new VueGrille();
-					vueGrille.afficher(grille);
+
+					nbJoueursInitial = m.joueurs.size();
+
+					// Initialisation grille
+
+					this.grille = new Grille();
+
+					// Initialisation liste joueurs
+
+					ArrayList<Aventurier> roles = new ArrayList<>();
+					roles.add(new Explorateur());
+					roles.add(new Ingenieur());
+					roles.add(new Messager());
+					roles.add(new Navigateur());
+					roles.add(new Pilote());
+					roles.add(new Plongeur());
+
+					Utils.melangerAventuriers(roles);
+
+					ArrayList<Integer> listeJours = new ArrayList<>();
+
+					listeJours.addAll(m.joueurs.values());
+
+					Collections.sort(listeJours);
+
+					ArrayList<String> listeJoueursOrd = new ArrayList<>();
+					ArrayList<String> listeJoueursNSP = new ArrayList<>();
+
+					for (Integer jours : listeJours) { // On teste tous les nb de jours
+						for (String joueur : m.joueurs.keySet()) { // On regarde pour tous les joueurs
+							if (m.joueurs.get(joueur) == jours) { // si son nb jours correspond
+								if (!listeJoueursOrd.contains(joueur)) { // s'il n'est pas déjà dans la liste
+									if (jours == -1) { // s'il n'est jamais allé sur une île ou qu'il ne s'en souvient pas
+										listeJoueursNSP.add(joueur); // on l'ajoutera à la fin
+									} else { // autrement
+										listeJoueursOrd.add(joueur); // on l'ajoute au début
+									}
+								}
+							}
+						}
+					}
+
+					listeJoueursOrd.addAll(listeJoueursNSP);
+
+					System.out.print(listeJoueursOrd);
+
+					this.joueurs = new HashMap<>();
+
+					for (Aventurier av : roles) {
+						String nom = listeJoueursOrd.get(roles.indexOf(av));
+						av.setNom(nom);
+						this.joueurs.put(nom, av);
+					}
+
+					// Initialisation niveau eau
+
+					this.niveauDEau = 1;
+
+					// Initialisation cartes trésor
+
+					// A FAIRE
+
+					// Initialisation cartes inondation
+
+					// A FAIRE
 					break;
 				case DEPLACER:
-
+					break;
+                case DEPLACER_VERS:
+					m.joueurCourant.setPosition(m.tuile);
+                    break;
+				case ASSECHER_VERS:
+					m.tuile.assecher();
 					break;
 				case ASSECHER:
+					demandeAssacher();
 					break;
 				case ECHANGER:
 					break;
@@ -192,21 +304,8 @@ public class Controleur implements Observateur {
 					break;
 			}
 	}
+
+	private void demandeAssacher() {
+	}
+
 }
-/*
-criteres
-
-13 points dossier
-7 pts demo
-
-1 pt qualité rapport
-1 pt lisibilité diagramme
-1 pt diag séq trou av
-4 pts diag se déplacer
-2 pts diag seq assecher
-4 pts diag classe
-
-4 pts code conforme conception
-1 pt preparation demo
-2 pt demo pt de vue deplacement / assechement
-*/

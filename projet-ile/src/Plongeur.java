@@ -3,8 +3,9 @@ import java.util.ArrayList;
 
 public class Plongeur extends Aventurier {
 
-	Plongeur(String nom, Tuile position, Utils.Pion pion) {
-		super(nom, position, pion);
+	Plongeur() {
+		super();
+		super.setPion(Utils.Pion.ORANGE);
 	}
 
 	@Override

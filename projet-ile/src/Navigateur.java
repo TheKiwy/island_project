@@ -1,7 +1,8 @@
 public class Navigateur extends Aventurier {
 
-	Navigateur(String nom, Tuile position, Utils.Pion pion) {
-		super(nom, position, pion);
+	Navigateur() {
+		super();
+		super.setPion(Utils.Pion.JAUNE);
 	}
 
 	public void deplacerAutreVers(Aventurier joueur, Tuile tuile) {
