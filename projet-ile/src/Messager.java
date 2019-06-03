@@ -5,7 +5,7 @@ public class Messager extends Aventurier {
 
 	Messager() {
 		super();
-		super.setPion(Utils.Pion.VIOLET);
+		this.setPion(Utils.Pion.VIOLET);
 	}
 
 

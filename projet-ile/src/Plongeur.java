@@ -5,7 +5,7 @@ public class Plongeur extends Aventurier {
 
 	Plongeur() {
 		super();
-		super.setPion(Utils.Pion.ORANGE);
+		this.setPion(Utils.Pion.ORANGE);
 	}
 
 	@Override

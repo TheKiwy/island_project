@@ -2,12 +2,16 @@ import java.util.Scanner;
 
 public class VueAventurier extends Obseve{
 
+	VueAventurier() {
+
+	}
 
 	public void afficher(Aventurier a) {
 			// Console View
 
 		// Declaration
 		Scanner entre = new Scanner(System.in);
+		Scanner entre2 = new Scanner(System.in);
 		int action;
 		Message m = new Message();
 
@@ -17,20 +21,20 @@ public class VueAventurier extends Obseve{
 		do {
 			do {
 				System.out.println(
-								"	#======================#" +
-								"	| 1: Se déplacer       |" +
-								"	| 2: Assécher          |" +
-								"	| 3: Echanger          |" +
-								"	| 4: Récupérer trésor  |" +
-								"	| 5: Utiliser carte    |" +
-								"	| 6: Fin du tour       |" +
-								"	#======================#" +
+								"	#======================#\n" +
+								"	| 1: Se déplacer       |\n" +
+								"	| 2: Assécher          |\n" +
+								"	| 3: Echanger          |\n" +
+								"	| 4: Récupérer trésor  |\n" +
+								"	| 5: Utiliser carte    |\n" +
+								"	| 6: Fin du tour       |\n" +
+								"	#======================#\n" +
 								"Taper le numéros des actions:"
 				);
 				action = entre.nextInt();
-			} while (action == 1 || action == 2 || action == 3 || action == 4 || action == 5 || action == 6);
+			} while (action != 1 && action != 2 && action != 3 && action != 4 && action != 5 && action != 6);
 			System.out.println("Vous avez renseigné l'action" + action + ", êtes vous sûr ? oui/non");
-		} while (entre.nextLine() == "non");
+		} while (entre2.nextLine() != "oui");
 
 
 		if (action == 1) {

@@ -58,7 +58,6 @@ public class VueSettings extends Obseve {
             } else {
                 m.type = TypesMessage.DEMARRER_PARTIE;
                 bool = false;
-                this.notifyObservateur(m);
             }
         } while (bool);
 

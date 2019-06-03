@@ -4,7 +4,7 @@ public class Explorateur extends Aventurier {
 
 	Explorateur() {
 		super();
-		super.setPion(Utils.Pion.VERT);
+		this.setPion(Utils.Pion.VERT);
 	}
 
 	@Override
@@ -140,6 +140,7 @@ public class Explorateur extends Aventurier {
 				listeTuiles.add(tuileBD);
 			}
 		}
+		listeTuiles.add(getPosition());
 		return listeTuiles;
 	}
 

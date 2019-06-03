@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class VueGrille extends Obseve{
 
+	VueGrille() {
+	}
 
 
 	public void afficher(Grille grille)  {

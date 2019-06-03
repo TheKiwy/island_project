@@ -6,32 +6,38 @@ public class Controleur implements Observateur {
 	private ArrayList<CarteInondation> defausseInondation;
 	private ArrayList<CarteInondation> pileInondation;
 	private Grille grille;
-	private HashMap<String, Aventurier> joueurs;
+	private ArrayList<Aventurier> joueurs;
 	private VueAventurier vueAventurier;
 	private VueGrille vueGrille;
 	private ArrayList<CarteTresor> pileTresor;
 	private ArrayList<CarteTresor> defausseTresor;
 	private int niveauDEau;
 	private int nbJoueursInitial;
+	private int nbActions;
+	private VueSettings vueSettings;
 
 	// Constructor
 	Controleur() {
 
+		vueGrille = new VueGrille();
+		vueGrille.addObservateur(this);
+		vueAventurier = new VueAventurier();
+		vueAventurier.addObservateur(this);
+
 		// Start by Player Settings
-		VueSettings vueSettings = new VueSettings();
+		vueSettings = new VueSettings();
 		vueSettings.addObservateur(this);
 		vueSettings.settinggame();
+
+
 	}
 
 	public boolean partieFinie(){
 		if(joueurs.size() < nbJoueursInitial){
-			System.out.println("Un joueur est mort");
 			return true;
 		}else if(niveauDEau >= 10){
-			System.out.println("Le niveau d'eau est trop élevé, tous les joueurs sont morts");
 			return true;
 		}else if(grille.getTuiles().get(16).getEtat() == Utils.EtatTuile.COULEE){
-			System.out.println("Il n'y a pas d'héliport pour s'échapper, tous les joueurs restent coincés");
 			return true;
 		}else if(grille.getTuiles().get(15).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(22).getEtat() == Utils.EtatTuile.COULEE ||
 				grille.getTuiles().get(0).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(6).getEtat() == Utils.EtatTuile.COULEE ||
@@ -47,61 +53,29 @@ public class Controleur implements Observateur {
 
 	public void partieEnCours(){
 
-		boolean effectuerAction;
-		Scanner scan = new Scanner (System.in);
-		int nbActions = 0;
 
 		do{
-			effectuerAction = true;
 
-			for(int i = 0; i < nbJoueursInitial-1; i++){
-
-				Aventurier a = joueurs.get(i);
-
-				System.out.println("Voulez-vous effectuer une action? oui/non ");
-				scan.nextLine();
-
+			for(Aventurier a : this.joueurs) {
 				/*Effectuer de 0 à 2 actions*/
+					vueAventurier.afficher(a);
+					if (nbActions < 3) {
+						nbActions++;
+					}
+					/*Tirer 2 cartes trésor*/
 
-				if("oui".equals(scan.toString())){
-					nbActions++;
-
-					do{
-
-						vueAventurier.afficher(a);
-						System.out.println("Souhaitez-vous effectuer une autre action? oui/non");
-
-						if("non".equals(scan.toString())){
-							effectuerAction=false;
-						}else if("oui".equals(scan.toString())){
-							if(nbActions < 3){
-								nbActions++;
-							}else{
-								effectuerAction=false;
-								System.out.println("Vous avez atteint le nombre maximal d'actions dans le meme tour");
-							}
-						};
-
-					}while(effectuerAction);
-
-				}else if("non".equals(scan.toString())){
-					i++;
-					break;
-				}
-
-				/*Tirer 2 cartes trésor*/
-
-				for(int j = 0; j < 1; j++){
-					piocherCarteTresor(a);
-				}
-
-				/*Tirer 2 cartes inondation*/
-
-				for(int k = 0; k < 1; k++){
-					piocherCarteInondation();
-				}
+					for(int j = 0; j < 1; j++){
+						piocherCarteTresor(a);
+					}
 
 			}
+			/*Tirer 2 cartes inondation*/
+
+			for(int k = 0; k < 1; k++){
+				piocherCarteInondation();
+			}
+
+
 
 		}while(!partieFinie());
 	}
@@ -110,7 +84,7 @@ public class Controleur implements Observateur {
 		return this.grille;
 	}
 
-	public HashMap<String, Aventurier> getAventuriers() {
+	public ArrayList<Aventurier> getAventuriers() {
 		return joueurs;
 	}
 
@@ -132,12 +106,9 @@ public class Controleur implements Observateur {
 	}
 	public void defausserCarteTresor(CarteTresor carte, Aventurier a) {
 		a.defausserCarteTresor(carte, defausseTresor);
-
-
 	}
 
 	public void piocherCarteInondation() {
-
 		CarteInondation carte;
 		carte = pileInondation.get(1);
 		pileInondation.remove(carte);
@@ -150,9 +121,7 @@ public class Controleur implements Observateur {
 	}
 
 
-	public Aventurier getAventurier(String nom) {
-		return joueurs.get(nom);
-	}
+
 
 	public void melangerPileInondation() {
 		ArrayList<CarteInondation> pileMelange = new ArrayList<>();
@@ -187,7 +156,7 @@ public class Controleur implements Observateur {
 		return pileInondation;
 	}
 
-	public HashMap<String, Aventurier> getJoueurs() {
+	public ArrayList<Aventurier> getJoueurs() {
 		return joueurs;
 	}
 
@@ -213,8 +182,6 @@ public class Controleur implements Observateur {
 			// Messages processing
 			switch (m.type) {
 				case DEMARRER_PARTIE:
-
-					nbJoueursInitial = m.joueurs.size();
 
 					// Initialisation grille
 
@@ -259,13 +226,14 @@ public class Controleur implements Observateur {
 
 					System.out.print(listeJoueursOrd);
 
-					this.joueurs = new HashMap<>();
+					this.joueurs = new ArrayList<>();
 
-					for (Aventurier av : roles) {
-						String nom = listeJoueursOrd.get(roles.indexOf(av));
-						av.setNom(nom);
-						this.joueurs.put(nom, av);
+					for (String nomJ : listeJoueursOrd) {
+						Aventurier av = roles.get(listeJoueursOrd.indexOf(nomJ));
+						av.setNom(nomJ);
+						this.joueurs.add(av);
 					}
+					nbJoueursInitial = this.joueurs.size();
 
 					// Initialisation niveau eau
 
@@ -278,6 +246,10 @@ public class Controleur implements Observateur {
 					// Initialisation cartes inondation
 
 					// A FAIRE
+
+					// Lancement
+
+					this.partieEnCours();
 					break;
 				case DEPLACER:
 					break;
@@ -288,7 +260,6 @@ public class Controleur implements Observateur {
 					m.tuile.assecher();
 					break;
 				case ASSECHER:
-					demandeAssacher();
 					break;
 				case ECHANGER:
 					break;

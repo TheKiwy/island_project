@@ -4,10 +4,7 @@ import java.util.Scanner;
 
 public class CarteHelicoptere extends CarteTresor {
 
-	public void action() {
-		// passer par le controleur pour appeler la méthode ci-dessous
-	}
-
+	@Override
 	public void action(Tuile tuileDepart, Tuile tuileArrivee, ArrayList<CarteTresor> defausse){
 		boolean actionUtilisee = false;
 		Scanner entree = new Scanner(System.in);
@@ -28,10 +25,6 @@ public class CarteHelicoptere extends CarteTresor {
 
 	public String getType() {
 		return "CarteHelicoptere";
-	}
-
-	public TypeTresor getTypeTresor() {
-		return null; // pas de type tresor pour cette carte
 	}
 
 }

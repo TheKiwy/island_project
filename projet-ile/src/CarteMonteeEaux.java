@@ -2,11 +2,7 @@
 import java.util.ArrayList;
 
 public class CarteMonteeEaux extends CarteTresor {
-
-	public void action() {
-		// passer par le controleur
-	}
-
+	@Override
 	public void action(int niveauEau, ArrayList<CarteInondation> pileInondation, ArrayList<CarteInondation> defausseInondation){
 		niveauEau += 1;
 		pileInondation.addAll(defausseInondation);
@@ -16,10 +12,6 @@ public class CarteMonteeEaux extends CarteTresor {
 
 	public String getType() {
 		return "CarteMonteeEaux";
-	}
-
-	public TypeTresor getTypeTresor() {
-		return null; // pas de type tresor pour cette carte
 	}
 
 }

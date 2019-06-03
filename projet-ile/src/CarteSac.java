@@ -4,10 +4,7 @@ import java.util.Scanner;
 
 public class CarteSac extends CarteTresor {
 
-	public void action() {
-		// passer par le controleur pour appeler la méthode ci-dessous
-	}
-
+	@Override
 	public void action(Tuile tuile, ArrayList<CarteTresor> defausse){
 		boolean actionUtilisee = false;
 		Scanner entree = new Scanner(System.in);
@@ -23,10 +20,6 @@ public class CarteSac extends CarteTresor {
 
 	public String getType() {
 		return "CarteSac";
-	}
-
-	public TypeTresor getTypeTresor() {
-		return null; // pas de type tresor pour cette carte
 	}
 
 }

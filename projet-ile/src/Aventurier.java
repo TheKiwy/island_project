@@ -8,6 +8,8 @@ public abstract class Aventurier {
 	private String nom;
 	private Utils.Pion pion;
 
+	public abstract String getRole();
+
 	Aventurier() {
 		cartes = new ArrayList<>();
 		tresorsPosseder = new ArrayList<>();
@@ -27,8 +29,7 @@ public abstract class Aventurier {
 		this.position = tuile;
 	}
 
-	public void assecher(Tuile tuile) {
-		tuile.assecher();	}
+
 
 	public ArrayList<Tuile> getDeplacementsPossibles(Grille g) {
 		int x = this.position.getCordX();
@@ -149,7 +150,7 @@ public abstract class Aventurier {
 		return this.nom;
 	}
 
-	public abstract String getRole();
+
 
 	public void ajouterCarteTresor(CarteTresor carte) {
 		this.cartes.add(carte);
