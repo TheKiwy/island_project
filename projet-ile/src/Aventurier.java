@@ -139,7 +139,6 @@ public abstract class Aventurier {
 	}
 
 	public void utiliserCarte(CarteTresor carte) {
-		carte.action();
 	}
 
 	public ArrayList<CarteTresor> getCartes() {

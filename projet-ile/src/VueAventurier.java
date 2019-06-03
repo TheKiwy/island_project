@@ -33,23 +33,31 @@ public class VueAventurier extends Obseve{
 				);
 				action = entre.nextInt();
 			} while (action != 1 && action != 2 && action != 3 && action != 4 && action != 5 && action != 6);
-			System.out.println("Vous avez renseigné l'action" + action + ", êtes vous sûr ? oui/non");
-		} while (entre2.nextLine() != "oui");
+			System.out.println("Vous avez renseigné l'action " + action + ", êtes vous sûr ? oui/non");
+		} while (!entre2.nextLine().equals("oui"));
 
 
 		if (action == 1) {
 			m.type = TypesMessage.DEPLACER;
+			m.joueurCourant = a;
 		} else if (action == 2) {
 			m.type = TypesMessage.ASSECHER;
 		} else if (action == 3) {
+			do {
+				System.out.println("Veuillez indiquer le nom du joueur avec qui vous voulez echanger:");
+				m.echangeJ = entre.nextLine();
+				System.out.println("Vous avez renseignez " + m.echangeJ + ", êtes vous sûr(e) ? oui/non");
+			} while (entre.nextLine() !="oui");
 			m.type = TypesMessage.ECHANGER;
+			m.joueurCourant = a;
 		} else if (action == 4) {
 			m.type = TypesMessage.RECUPERER_TRESOR;
+			m.joueurCourant = a;
 		} else if (action == 5) {
 			System.out.println("L'avanturier qui veut joué la carte, est-il le joueur  actuel ? oui/non");
 			if (entre.nextLine() == "oui") {
 				m.type = TypesMessage.UTILISER_CARTE_COURANT;
-				m.joueur = a.getNom();
+				m.joueurCourant = a;
 			} else {
 				String nom = null;
 				System.out.print("Veuillez indiquer le nom du joueur:");

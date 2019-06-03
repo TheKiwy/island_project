@@ -51,12 +51,13 @@ public class VueGrille extends Obseve{
 			// Instruction
 		// Display possible displacement
 		System.out.println("Voicie les numéros de case disponible pour le deplacement:");
-		for (int i=0; i<grille.getTuiles().size();i++) {
-			if (grille.getTuiles().get(i) == tuiles.get(j)) {
-				System.out.println(j+1 +": Vers la case"+ i + grille.getTuiles().get(i));
-				j++;
+		if (tuiles.size() != 0) {
+			for (int i = 0; i < grille.getTuiles().size(); i++) {
+				if (grille.getTuiles().get(i) == tuiles.get(j)) {
+					System.out.println(j + 1 + ": Vers la case" + i + grille.getTuiles().get(i));
+					j++;
+				}
 			}
-		}
 
 		// User choice
 		do {
@@ -71,6 +72,9 @@ public class VueGrille extends Obseve{
 
 		m.type = TypesMessage.DEPLACER_VERS;
 		m.tuile = tuiles.get(choice);
+		} else {
+			System.out.println("Il n'y pas de case possible pour le déplacement autour de vous.");
+		}
 		notifyObservateur(m);
 
 	}
@@ -84,27 +88,29 @@ public class VueGrille extends Obseve{
 
 		// Instruction
 		// Display possible displacement
-		System.out.println("Voicie les numéros de case disponible pour le deplacement:");
-		for (int i=0; i<grille.getTuiles().size();i++) {
-			if (grille.getTuiles().get(i) == tuiles.get(j)) {
-				System.out.println(j+1 +": Vers la case"+ i + grille.getTuiles().get(i));
-				j++;
+		System.out.println("Voicie les numéros de case disponible pour l'asséchemment:");
+		if (tuiles.size()!= 0) {
+			for (int i = 0; i < grille.getTuiles().size(); i++) {
+				if (grille.getTuiles().get(i) == tuiles.get(j)) {
+					System.out.println(j + 1 + ": Vers la case" + i + grille.getTuiles().get(i));
+					j++;
+				}
 			}
-		}
 
-		// User choice
-		do {
+			// User choice
 			do {
-				System.out.println("Veuillez indiquez le numeros de la vers le quelle vous voulez vous assécher: ");
-				choice = entre.nextInt();
-			} while (choice < 0 && choice >= tuiles.size());
-			System.out.println();
-			System.out.println("Votre choix est de ce déplacer vers :" + tuiles.get(choice).getNom());
-			System.out.println("Êtes vous sûr(e) ? oui/non");
-		} while (entre.nextLine() != "oui");
+				do {
+					System.out.println("Veuillez indiquez le numeros de la vers le quelle vous voulez vous assécher: ");
+					choice = entre.nextInt();
+				} while (choice < 0 && choice >= tuiles.size());
+				System.out.println();
+				System.out.println("Votre choix est de ce déplacer vers :" + tuiles.get(choice).getNom());
+				System.out.println("Êtes vous sûr(e) ? oui/non");
+			} while (entre.nextLine() != "oui");
 
-		m.type = TypesMessage.ASSECHER_VERS;
-		m.tuile = tuiles.get(choice);
+			m.type = TypesMessage.ASSECHER_VERS;
+			m.tuile = tuiles.get(choice);
+		}
 		notifyObservateur(m);
 
 	}

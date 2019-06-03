@@ -106,8 +106,10 @@ public class Grille {
 	public Tuile getTuileUnique(Role role) {
 		for (Tuile[] ligneTuiles : grille) {
 			for (Tuile tuile : ligneTuiles) {
-				if (tuile.getRole() == role) {
-					return tuile;
+				if (tuile != null) {
+					if (tuile.getRole() == role) {
+						return tuile;
+					}
 				}
 			}
 		}
@@ -119,8 +121,10 @@ public class Grille {
 		ArrayList<Tuile> listeTuiles = new ArrayList<>();
 		for (Tuile[] ligneTuiles : grille) {
 			for (Tuile tuile : ligneTuiles) {
-				if (tuile.getRole() == role) {
-					listeTuiles.add(tuile);
+				if (tuile != null) {
+					if (tuile.getRole() == role) {
+						listeTuiles.add(tuile);
+					}
 				}
 			}
 		}

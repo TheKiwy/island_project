@@ -2,9 +2,10 @@ import java.util.ArrayList;
 
 public class Explorateur extends Aventurier {
 
-	Explorateur() {
+	Explorateur(Tuile tuile) {
 		super();
 		this.setPion(Utils.Pion.VERT);
+		setPosition(tuile);
 	}
 
 	@Override

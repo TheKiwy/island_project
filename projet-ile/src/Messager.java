@@ -3,9 +3,10 @@ import java.util.ArrayList;
 
 public class Messager extends Aventurier {
 
-	Messager() {
+	Messager(Tuile tuile) {
 		super();
 		this.setPion(Utils.Pion.VIOLET);
+		setPosition(tuile);
 	}
 
 

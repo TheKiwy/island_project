@@ -1,8 +1,9 @@
 public class Pilote extends Aventurier {
 
-    Pilote() {
+    Pilote(Tuile tuile) {
         super();
         this.setPion(Utils.Pion.BLEU);
+        setPosition(tuile);
     }
 
 	public void deplacementSpecial(Tuile tuile) {

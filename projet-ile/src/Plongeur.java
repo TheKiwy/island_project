@@ -3,9 +3,10 @@ import java.util.ArrayList;
 
 public class Plongeur extends Aventurier {
 
-	Plongeur() {
+	Plongeur(Tuile tuile) {
 		super();
 		this.setPion(Utils.Pion.ORANGE);
+		setPosition(tuile);
 	}
 
 	@Override

@@ -23,6 +23,7 @@ public class Controleur implements Observateur {
 		vueGrille.addObservateur(this);
 		vueAventurier = new VueAventurier();
 		vueAventurier.addObservateur(this);
+		grille = new Grille();
 
 		// Start by Player Settings
 		vueSettings = new VueSettings();
@@ -58,8 +59,8 @@ public class Controleur implements Observateur {
 
 			for(Aventurier a : this.joueurs) {
 				/*Effectuer de 0 à 2 actions*/
-					vueAventurier.afficher(a);
-					if (nbActions < 3) {
+					while (nbActions < 3 ) {
+						vueAventurier.afficher(a);
 						nbActions++;
 					}
 					/*Tirer 2 cartes trésor*/
@@ -181,21 +182,21 @@ public class Controleur implements Observateur {
 		if (null != m.type) //Delcaration
 			// Messages processing
 			switch (m.type) {
-				case DEMARRER_PARTIE:
+                case DEMARRER_PARTIE:
 
-					// Initialisation grille
+                    // Initialisation grille
 
-					this.grille = new Grille();
+                    this.grille = new Grille();
 
-					// Initialisation liste joueurs
+                    // Initialisation liste joueurs
 
-					ArrayList<Aventurier> roles = new ArrayList<>();
-					roles.add(new Explorateur());
-					roles.add(new Ingenieur());
-					roles.add(new Messager());
-					roles.add(new Navigateur());
-					roles.add(new Pilote());
-					roles.add(new Plongeur());
+                    ArrayList<Aventurier> roles = new ArrayList<>();
+					roles.add(new Explorateur(grille.getTuileUnique(Role.porteVerte)));
+					roles.add(new Ingenieur(grille.getTuileUnique(Role.porteRouge)));
+					roles.add(new Messager(grille.getTuileUnique(Role.porteViolette)));
+					roles.add(new Navigateur(grille.getTuileUnique(Role.porteJaune)));
+					roles.add(new Pilote(grille.getTuileUnique(Role.porteBleue)));
+					roles.add(new Plongeur(grille.getTuileUnique(Role.porteNoire)));
 
 					Utils.melangerAventuriers(roles);
 
@@ -252,14 +253,16 @@ public class Controleur implements Observateur {
 					this.partieEnCours();
 					break;
 				case DEPLACER:
+					vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille);
 					break;
                 case DEPLACER_VERS:
 					m.joueurCourant.setPosition(m.tuile);
                     break;
+				case ASSECHER:
+					vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille);
+					break;
 				case ASSECHER_VERS:
 					m.tuile.assecher();
-					break;
-				case ASSECHER:
 					break;
 				case ECHANGER:
 					break;
@@ -270,6 +273,7 @@ public class Controleur implements Observateur {
 				case UTILISER_CARTE_NON_COURANT:
 					break;
 				case FIN_TOUR:
+					nbActions = 4;
 					break;
 				default:
 					break;

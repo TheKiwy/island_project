@@ -14,4 +14,7 @@ public class Message {
     // Player deplacement
     public Tuile tuile;
     public Aventurier joueurCourant;
+
+    // Player Exchange
+    public String echangeJ;
 }
