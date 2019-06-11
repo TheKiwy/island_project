@@ -1,6 +1,3 @@
-
-import java.util.ArrayList;
-
 public class Messager extends Aventurier {
 
 	Messager(Tuile tuile) {

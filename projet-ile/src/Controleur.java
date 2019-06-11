@@ -255,9 +255,9 @@ public class Controleur implements Observateur {
 				case DEPLACER:
 					vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille);
 					break;
-                case DEPLACER_VERS:
+                                case DEPLACER_VERS:
 					m.joueurCourant.setPosition(m.tuile);
-                    break;
+                                    break;
 				case ASSECHER:
 					vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille);
 					break;

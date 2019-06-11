@@ -32,100 +32,47 @@ public abstract class Aventurier {
 
 
 	public ArrayList<Tuile> getDeplacementsPossibles(Grille g) {
-		int x = this.position.getCordX();
-		int y = this.position.getCordY();
-		ArrayList<Tuile> listeTuiles = new ArrayList<>();
+            int x = this.position.getCordX();
+            int y = this.position.getCordY();
+            ArrayList<Tuile> listeTuiles = new ArrayList<>();            
+            Tuile tuileTestee;
+            
+            for (int xTuile = x - 1; xTuile <= x + 1; xTuile++) {
+                for (int yTuile = y - 1; yTuile <= y + 1; yTuile++) {
+                    if ((xTuile >= 0 && xTuile <= 5) && (yTuile >= 0 && yTuile <= 5)) {
+                        tuileTestee = g.getTuileCoord(xTuile, yTuile);
+                        if (tuileTestee != null) {
+                            if ((tuileTestee.getEtat() != Utils.EtatTuile.COULEE) && (Math.abs(xTuile - x) != Math.abs(yTuile - y)) && (tuileTestee != this.getPosition())) {
+                                listeTuiles.add(tuileTestee);
+                            }
+                        }
+                    }
+                }
+            }
 
-		if (x != 0) {
-			Tuile tuileG = null;
-			tuileG = g.getTuileCoord(x-1, y); // recup case x - 1, y
-			if (tuileG != null) {
-				if (tuileG.getEtat() != Utils.EtatTuile.COULEE) {
-					listeTuiles.add(tuileG);
-				}
-			}
-		}
-
-		if (x != 5) {
-			Tuile tuileD = null;
-			tuileD = g.getTuileCoord(x+1, y); // recup case x + 1, y
-			if (tuileD != null) {
-				if (tuileD.getEtat() != Utils.EtatTuile.COULEE) {
-					listeTuiles.add(tuileD);
-				}
-			}
-		}
-
-		if (y != 0) {
-			Tuile tuileH = null;
-			tuileH = g.getTuileCoord(x, y-1); // recup case x, y - 1
-			if (tuileH != null) {
-				if (tuileH.getEtat() != Utils.EtatTuile.COULEE) {
-					listeTuiles.add(tuileH);
-				}
-			}
-		}
-
-		if (y != 5) {
-			Tuile tuileB = null;
-			tuileB = g.getTuileCoord(x, y+1); // recup case x, y + 1
-			if (tuileB != null) {
-				if (tuileB.getEtat() != Utils.EtatTuile.COULEE) {
-					listeTuiles.add(tuileB);
-				}
-			}
-		}
-
-		return listeTuiles;
+            return listeTuiles;
 	}
 
 	public ArrayList<Tuile> getAssechementsPossibles(Grille g) {
-		int x = this.position.getCordX();
-		int y = this.position.getCordY();
-		ArrayList<Tuile> listeTuiles = new ArrayList<>();
-
-		if (x != 0) {
-			Tuile tuileG = null;
-			tuileG = g.getTuileCoord(x-1, y); // recup case x - 1, y
-			if (tuileG != null) {
-				if (tuileG.getEtat() != Utils.EtatTuile.INONDEE) {
-					listeTuiles.add(tuileG);
-				}
-			}
-		}
-
-		if (x != 5) {
-			Tuile tuileD = null;
-			tuileD = g.getTuileCoord(x+1, y); // recup case x + 1, y
-			if (tuileD != null) {
-				if (tuileD.getEtat() != Utils.EtatTuile.INONDEE) {
-					listeTuiles.add(tuileD);
-				}
-			}
-		}
-
-		if (y != 0) {
-			Tuile tuileH = null;
-			tuileH = g.getTuileCoord(x, y-1); // recup case x, y - 1
-			if (tuileH != null) {
-				if (tuileH.getEtat() != Utils.EtatTuile.INONDEE) {
-					listeTuiles.add(tuileH);
-				}
-			}
-		}
-
-		if (y != 5) {
-			Tuile tuileB = null;
-			tuileB = g.getTuileCoord(x, y+1); // recup case x, y + 1
-			if (tuileB != null) {
-				if (tuileB.getEtat() == Utils.EtatTuile.INONDEE) {
-					listeTuiles.add(tuileB);
-				}
-			}
-		}
-		listeTuiles.add(getPosition());
-		return listeTuiles;
-	}
+            int x = this.position.getCordX();
+            int y = this.position.getCordY();
+            ArrayList<Tuile> listeTuiles = new ArrayList<>();
+            Tuile tuileTestee;
+            
+            for (int xTuile = x - 1; xTuile <= x + 1; xTuile++) {
+                for (int yTuile = y - 1; yTuile <= y + 1; yTuile++) {
+                    if ((xTuile >= 0 && xTuile <= 5) && (yTuile >= 0 && yTuile <= 5)) {
+                        tuileTestee = g.getTuileCoord(xTuile, yTuile);
+                        if (tuileTestee != null) {
+                            if ((tuileTestee.getEtat() == Utils.EtatTuile.INONDEE) && (Math.abs(xTuile - x) != Math.abs(yTuile - y))) {
+                                listeTuiles.add(tuileTestee);
+                            }
+                        }
+                    }
+                }
+            }
+            return listeTuiles;
+        }
 
 	public Tuile getPosition(){
 		return position;
