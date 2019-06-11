@@ -72,10 +72,11 @@ public class VueGrille extends Obseve{
 
 		m.type = TypesMessage.DEPLACER_VERS;
 		m.tuile = tuiles.get(choice);
+		notifyObservateur(m);
 		} else {
 			System.out.println("Il n'y pas de case possible pour le déplacement autour de vous.");
 		}
-		notifyObservateur(m);
+
 
 	}
 
@@ -87,7 +88,7 @@ public class VueGrille extends Obseve{
 		int choice;
 
 		// Instruction
-		// Display possible displacement
+		// Display possible dry
 		System.out.println("Voicie les numéros de case disponible pour l'asséchemment:");
 		if (tuiles.size()!= 0) {
 			for (int i = 0; i < grille.getTuiles().size(); i++) {
@@ -104,7 +105,7 @@ public class VueGrille extends Obseve{
 					choice = entre.nextInt();
 				} while (choice < 0 && choice >= tuiles.size());
 				System.out.println();
-				System.out.println("Votre choix est de ce déplacer vers :" + tuiles.get(choice).getNom());
+				System.out.println("Votre choix est d'assecher:" + tuiles.get(choice).getNom());
 				System.out.println("Êtes vous sûr(e) ? oui/non");
 			} while (entre.nextLine() != "oui");
 

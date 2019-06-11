@@ -4,17 +4,17 @@ public class Controleur implements Observateur {
 
 	// Attributs
     
-        // Pile
+        // Deck
         private ArrayList<CarteTresor> pileTresor;
 	private ArrayList<CarteTresor> defausseTresor;
 	private ArrayList<CarteInondation> defausseInondation;
 	private ArrayList<CarteInondation> pileInondation;
         
-        // Grille
+        // Grid
 	private Grille grille;
 	private VueGrille vueGrille;
         
-        // Aventurier
+        // Players
         private ArrayList<Aventurier> joueurs;
 	private VueAventurier vueAventurier;
         private int nbJoueursInitial;
@@ -22,7 +22,7 @@ public class Controleur implements Observateur {
          // Settings
 	private VueSettings vueSettings;
         
-        // Autres
+        // Others
 	private int niveauDEau;
 	private int nbActions;
        
@@ -55,25 +55,23 @@ public class Controleur implements Observateur {
 	}
 
 	public void partieEnCours(){
-
-
+		// Iteration Game
 		do{
-
+			// Player turn
 			for(Aventurier a : this.joueurs) {
-				/*Effectuer de 0 à 2 actions*/
-					while (nbActions < 3 ) {
-						vueAventurier.afficher(a);
-						nbActions++;
-					}
-					/*Tirer 2 cartes trésor*/
+				// 3 Actions
+				while (nbActions < 3 ) {
+					vueAventurier.afficher(a);
+					nbActions++;
+				}
 
-					for(int j = 0; j < 1; j++){
-						piocherCarteTresor(a);
-					}
-
+				// Pick 2 treasure card
+				for(int j = 0; j < 1; j++){
+					piocherCarteTresor(a);
+				}
 			}
-			/*Tirer 2 cartes inondation*/
 
+			// Pick 2 overflow card
 			for(int k = 0; k < 1; k++){
 				piocherCarteInondation();
 			}
@@ -93,6 +91,7 @@ public class Controleur implements Observateur {
 
 	public void piocherCarteTresor(Aventurier a) {
 		CarteTresor carte;
+		int test = pileTresor.size();
 		carte = pileTresor.get(1);
 		pileTresor.remove(carte);
 
@@ -214,21 +213,20 @@ public class Controleur implements Observateur {
 				ArrayList<String> listeJoueursOrd = new ArrayList<>();
 				ArrayList<String> listeJoueursNSP = new ArrayList<>();
                         
-				// On teste tous les nb de jours
+				// Day number testing
 				for (Integer jours : listeJours) {
-					// On regarde pour tous les joueurs
+					// Player
 					for (String joueur : m.joueurs.keySet()) {
-						// si son nb jours correspond
+						// Matching day number
 						if (m.joueurs.get(joueur) == jours) {
-							// s'il n'est pas déjà dans la liste
+							// Player doesn't exist
 							if (!listeJoueursOrd.contains(joueur)) {
-								// s'il n'est jamais allé sur une île ou qu'il ne s'en souvient pas
+								// If he never or he forgot gone on an island
 								if (jours == -1) {
-									// on l'ajoutera à la fin
+									// Add him at the end of the list
 									listeJoueursNSP.add(joueur);
-									// autrement
 								} else {
-									// on l'ajoute au début
+									// Add him at the start of the list
 									listeJoueursOrd.add(joueur);
 								}
 							}
@@ -247,21 +245,21 @@ public class Controleur implements Observateur {
 				// Water Level initialization
 				this.niveauDEau = 1;
 
-				// Initialisation cartes trésor
+				// Treasure card initialization
 				pileTresor = new ArrayList<>();
-				// 3 cartes montée des eaux
+				// 3 Rising water card
 				for (int i=0; i <= 2; i++) {
 					pileTresor.add(new CarteMonteeEaux());
 				}
-				// 2 cartes sec de sables
+				// 2 Sand bag card
 				for (int i=0; i <= 1; i++) {
 					pileTresor.add(new CarteSac());
 				}
-				// 3 cartes hélicoptère
+				// 3 Helicopter card
 				for (int i=0; i <= 2; i++) {
 					pileTresor.add(new CarteHelicoptere());
 				}
-				// 5 cartes par morceau de trésor
+				// 5 Piece of treasure card
 				for (int i=0; i<= 4; i++) {
 					pileTresor.add(new CarteMorceauTresor(TypeTresor.pierre));
 					pileTresor.add(new CarteMorceauTresor(TypeTresor.calice));
@@ -271,7 +269,7 @@ public class Controleur implements Observateur {
 				defausseTresor = new ArrayList<>();
 				Collections.shuffle(pileTresor);
 
-				// Initialisation cartes inondation
+				// Overflow card
 				pileInondation = new ArrayList<>();
 				for (Tuile tuile : grille.getTuiles()) {
 					pileInondation.add(new CarteInondation(tuile));
@@ -279,30 +277,39 @@ public class Controleur implements Observateur {
 				defausseInondation = new ArrayList<>();
 				Collections.shuffle(pileInondation);
 
-				// Lancement
+				// Game lunch
 				this.partieEnCours();
 				break;
 			case DEPLACER:
+				// Chosen action: Displacement
 				vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille);
 				break;
 			case DEPLACER_VERS:
+				// Chosen displacement
 				m.joueurCourant.setPosition(m.tuile);
 				break;
 			case ASSECHER:
+				// Chosen action: Dry
 				vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille);
 				break;
             case ASSECHER_VERS:
+            	// Chosen dry
             	m.tuile.assecher();
             	break;
             case ECHANGER:
+            	// Chosen action: Exchange
             	break;
             case RECUPERER_TRESOR:
+            	// Chosen action: Recover treasure
             	break;
             case UTILISER_CARTE_COURANT:
+            	// Chosen action: Using card of current player
             	break;
             case UTILISER_CARTE_NON_COURANT:
+            	// Chosen action: Using card of none current player
             	break;
             case FIN_TOUR:
+            	// Chosen action: End turn
             	nbActions = 4;
             	break;
             default:
