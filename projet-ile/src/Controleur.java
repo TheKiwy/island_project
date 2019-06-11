@@ -3,34 +3,36 @@ import java.util.*;
 public class Controleur implements Observateur {
 
 	// Attributs
+    
+        // Pile
+        private ArrayList<CarteTresor> pileTresor;
+	private ArrayList<CarteTresor> defausseTresor;
 	private ArrayList<CarteInondation> defausseInondation;
 	private ArrayList<CarteInondation> pileInondation;
+        
+        // Grille
 	private Grille grille;
-	private ArrayList<Aventurier> joueurs;
-	private VueAventurier vueAventurier;
 	private VueGrille vueGrille;
-	private ArrayList<CarteTresor> pileTresor;
-	private ArrayList<CarteTresor> defausseTresor;
-	private int niveauDEau;
-	private int nbJoueursInitial;
-	private int nbActions;
+        
+        // Aventurier
+        private ArrayList<Aventurier> joueurs;
+	private VueAventurier vueAventurier;
+        private int nbJoueursInitial;
+        
+         // Settings
 	private VueSettings vueSettings;
+        
+        // Autres
+	private int niveauDEau;
+	private int nbActions;
+       
 
 	// Constructor
 	Controleur() {
-
-		vueGrille = new VueGrille();
-		vueGrille.addObservateur(this);
-		vueAventurier = new VueAventurier();
-		vueAventurier.addObservateur(this);
-		grille = new Grille();
-
 		// Start by Player Settings
 		vueSettings = new VueSettings();
 		vueSettings.addObservateur(this);
 		vueSettings.settinggame();
-
-
 	}
 
 	public boolean partieFinie(){
@@ -179,108 +181,132 @@ public class Controleur implements Observateur {
 
 
 	public void traiterMessage(Message m) {
-		if (null != m.type) //Delcaration
-			// Messages processing
-			switch (m.type) {
-                case DEMARRER_PARTIE:
+		// Messages processing
+		switch (m.type) {
 
-                    // Initialisation grille
+			case DEMARRER_PARTIE:
+				// View instantiation
+				vueGrille = new VueGrille();
+				vueGrille.addObservateur(this);
+				vueAventurier = new VueAventurier();
+				vueAventurier.addObservateur(this);
 
-                    this.grille = new Grille();
+				// Grid Instantiation
+				this.grille = new Grille();
 
-                    // Initialisation liste joueurs
+				// Player list initialization
+				ArrayList<Aventurier> roles = new ArrayList<>();
+				roles.add(new Explorateur(grille.getTuileUnique(Role.porteVerte)));
+				roles.add(new Ingenieur(grille.getTuileUnique(Role.porteRouge)));
+				roles.add(new Messager(grille.getTuileUnique(Role.porteViolette)));
+				roles.add(new Navigateur(grille.getTuileUnique(Role.porteJaune)));
+				roles.add(new Pilote(grille.getTuileUnique(Role.porteBleue)));
+				roles.add(new Plongeur(grille.getTuileUnique(Role.porteNoire)));
 
-                    ArrayList<Aventurier> roles = new ArrayList<>();
-					roles.add(new Explorateur(grille.getTuileUnique(Role.porteVerte)));
-					roles.add(new Ingenieur(grille.getTuileUnique(Role.porteRouge)));
-					roles.add(new Messager(grille.getTuileUnique(Role.porteViolette)));
-					roles.add(new Navigateur(grille.getTuileUnique(Role.porteJaune)));
-					roles.add(new Pilote(grille.getTuileUnique(Role.porteBleue)));
-					roles.add(new Plongeur(grille.getTuileUnique(Role.porteNoire)));
+				Utils.melangerAventuriers(roles);
 
-					Utils.melangerAventuriers(roles);
+				ArrayList<Integer> listeJours = new ArrayList<>();
 
-					ArrayList<Integer> listeJours = new ArrayList<>();
+				listeJours.addAll(m.joueurs.values());
 
-					listeJours.addAll(m.joueurs.values());
+				Collections.sort(listeJours);
 
-					Collections.sort(listeJours);
-
-					ArrayList<String> listeJoueursOrd = new ArrayList<>();
-					ArrayList<String> listeJoueursNSP = new ArrayList<>();
-
-					for (Integer jours : listeJours) { // On teste tous les nb de jours
-						for (String joueur : m.joueurs.keySet()) { // On regarde pour tous les joueurs
-							if (m.joueurs.get(joueur) == jours) { // si son nb jours correspond
-								if (!listeJoueursOrd.contains(joueur)) { // s'il n'est pas déjà dans la liste
-									if (jours == -1) { // s'il n'est jamais allé sur une île ou qu'il ne s'en souvient pas
-										listeJoueursNSP.add(joueur); // on l'ajoutera à la fin
-									} else { // autrement
-										listeJoueursOrd.add(joueur); // on l'ajoute au début
-									}
+				ArrayList<String> listeJoueursOrd = new ArrayList<>();
+				ArrayList<String> listeJoueursNSP = new ArrayList<>();
+                        
+				// On teste tous les nb de jours
+				for (Integer jours : listeJours) {
+					// On regarde pour tous les joueurs
+					for (String joueur : m.joueurs.keySet()) {
+						// si son nb jours correspond
+						if (m.joueurs.get(joueur) == jours) {
+							// s'il n'est pas déjà dans la liste
+							if (!listeJoueursOrd.contains(joueur)) {
+								// s'il n'est jamais allé sur une île ou qu'il ne s'en souvient pas
+								if (jours == -1) {
+									// on l'ajoutera à la fin
+									listeJoueursNSP.add(joueur);
+									// autrement
+								} else {
+									// on l'ajoute au début
+									listeJoueursOrd.add(joueur);
 								}
 							}
 						}
 					}
+				}
+				listeJoueursOrd.addAll(listeJoueursNSP);
+				this.joueurs = new ArrayList<>();
+				for (String nomJ : listeJoueursOrd) {
+					Aventurier av = roles.get(listeJoueursOrd.indexOf(nomJ));
+					av.setNom(nomJ);
+					this.joueurs.add(av);
+				}
+				nbJoueursInitial = this.joueurs.size();
 
-					listeJoueursOrd.addAll(listeJoueursNSP);
+				// Water Level initialization
+				this.niveauDEau = 1;
 
-					System.out.print(listeJoueursOrd);
+				// Initialisation cartes trésor
+				pileTresor = new ArrayList<>();
+				// 3 cartes montée des eaux
+				for (int i=0; i <= 2; i++) {
+					pileTresor.add(new CarteMonteeEaux());
+				}
+				// 2 cartes sec de sables
+				for (int i=0; i <= 1; i++) {
+					pileTresor.add(new CarteSac());
+				}
+				// 3 cartes hélicoptère
+				for (int i=0; i <= 2; i++) {
+					pileTresor.add(new CarteHelicoptere());
+				}
+				// 5 cartes par morceau de trésor
+				for (int i=0; i<= 4; i++) {
+					pileTresor.add(new CarteMorceauTresor(TypeTresor.pierre));
+					pileTresor.add(new CarteMorceauTresor(TypeTresor.calice));
+					pileTresor.add(new CarteMorceauTresor(TypeTresor.cristal));
+					pileTresor.add(new CarteMorceauTresor(TypeTresor.zephyr));
+				}
+				defausseTresor = new ArrayList<>();
+				Collections.shuffle(pileTresor);
 
-					this.joueurs = new ArrayList<>();
+				// Initialisation cartes inondation
+				pileInondation = new ArrayList<>();
+				for (Tuile tuile : grille.getTuiles()) {
+					pileInondation.add(new CarteInondation(tuile));
+				}
+				defausseInondation = new ArrayList<>();
+				Collections.shuffle(pileInondation);
 
-					for (String nomJ : listeJoueursOrd) {
-						Aventurier av = roles.get(listeJoueursOrd.indexOf(nomJ));
-						av.setNom(nomJ);
-						this.joueurs.add(av);
-					}
-					nbJoueursInitial = this.joueurs.size();
-
-					// Initialisation niveau eau
-
-					this.niveauDEau = 1;
-
-					// Initialisation cartes trésor
-
-					// A FAIRE
-
-					// Initialisation cartes inondation
-
-					// A FAIRE
-
-					// Lancement
-
-					this.partieEnCours();
-					break;
-				case DEPLACER:
-					vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille);
-					break;
-                                case DEPLACER_VERS:
-					m.joueurCourant.setPosition(m.tuile);
-                                    break;
-				case ASSECHER:
-					vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille);
-					break;
-				case ASSECHER_VERS:
-					m.tuile.assecher();
-					break;
-				case ECHANGER:
-					break;
-				case RECUPERER_TRESOR:
-					break;
-				case UTILISER_CARTE_COURANT:
-					break;
-				case UTILISER_CARTE_NON_COURANT:
-					break;
-				case FIN_TOUR:
-					nbActions = 4;
-					break;
-				default:
-					break;
-			}
-	}
-
-	private void demandeAssacher() {
-	}
-
+				// Lancement
+				this.partieEnCours();
+				break;
+			case DEPLACER:
+				vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille);
+				break;
+			case DEPLACER_VERS:
+				m.joueurCourant.setPosition(m.tuile);
+				break;
+			case ASSECHER:
+				vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille);
+				break;
+            case ASSECHER_VERS:
+            	m.tuile.assecher();
+            	break;
+            case ECHANGER:
+            	break;
+            case RECUPERER_TRESOR:
+            	break;
+            case UTILISER_CARTE_COURANT:
+            	break;
+            case UTILISER_CARTE_NON_COURANT:
+            	break;
+            case FIN_TOUR:
+            	nbActions = 4;
+            	break;
+            default:
+            	break;
+		}
+    }
 }
