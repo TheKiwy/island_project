@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class VueSettings extends Obseve {
+public class VueSettings extends Observe {
 
     public void settinggame() {
             // Console view

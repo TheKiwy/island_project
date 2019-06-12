@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class VueGrille extends Obseve{
+public class VueGrille extends Observe{
 
 	VueGrille() {
 	}
@@ -35,84 +35,104 @@ public class VueGrille extends Obseve{
 		);
 
 		System.out.println();
-		System.out.println("Voici le nom de chaque lieux de l'île:");
+		System.out.println("Voici le nom de chaque lieu de l'île:");
 		for (int i=0; i<grille.getTuiles().size();i++) {
 			System.out.println(i+1 + ": " + grille.getTuiles().get(i).getNom());
 		}
 	}
 
-	public void afficherDeplacementsPossibles(ArrayList<Tuile> tuiles, Grille grille) {
+	public void afficherDeplacementsPossibles(ArrayList<Tuile> tuiles, Grille grille, Aventurier avCourant) {
 			// Declaration
 		Scanner entre = new Scanner(System.in);
+                Scanner entre2 = new Scanner(System.in);
 		Message m = new Message();
-		int j = 0;
+		int j = 1;
 		int choice;
 
 			// Instruction
 		// Display possible displacement
-		System.out.println("Voicie les numéros de case disponible pour le deplacement:");
+		System.out.println("Voici les numéros de case disponibles pour le déplacement : ");
 		if (tuiles.size() != 0) {
-			for (int i = 0; i < grille.getTuiles().size(); i++) {
-				if (grille.getTuiles().get(i) == tuiles.get(j)) {
-					System.out.println(j + 1 + ": Vers la case" + i + grille.getTuiles().get(i));
-					j++;
-				}
-			}
+                        for (Tuile tuile : tuiles) {
+                            for (int i = 0; i < grille.getTuiles().size(); i++)  {
+                                if (grille.getTuiles().get(i) == tuile) {
+                                    System.out.println(j + " : Vers la case " + (i + 1) + " : " + grille.getTuiles().get(i).getNom());
+                                    j++;
+                                }
+                            }
+                        }
+                        
+                        for (int i = 0; i < grille.getTuiles().size(); i++)  {
+                            if (grille.getTuiles().get(i) == avCourant.getPosition()) {
+                                System.out.println("\nVous êtes en case " + (i + 1) + " :  " + grille.getTuiles().get(i).getNom());
+                            }
+                        }
 
-		// User choice
-		do {
-			do {
-				System.out.println("Veuillez indiquez le numeros de la vers le quelle vous voulez vous deplacer: ");
-				choice = entre.nextInt();
-			} while (choice < 0 && choice >= tuiles.size());
-			System.out.println();
-			System.out.println("Votre choix est de ce déplacer vers :" + tuiles.get(choice).getNom());
-			System.out.println("Êtes vous sûr(e) ? oui/non");
-		} while (entre.nextLine() != "oui");
+                    // User choice
+                        do {
+                                do {
+                                        System.out.println("Veuillez indiquer le numéro de la case vers laquelle vous voulez vous déplacer : ");
+                                        choice = entre.nextInt();
+                                } while (choice < 1 || choice > tuiles.size());
+                                System.out.println();
+                                System.out.println("Votre choix est de vous déplacer vers : " + tuiles.get(choice - 1).getNom());
+                                System.out.println("Êtes vous sûr(e) ? (oui/non)");
+                        } while (!entre2.nextLine().equals("oui"));
 
-		m.type = TypesMessage.DEPLACER_VERS;
-		m.tuile = tuiles.get(choice);
-		notifyObservateur(m);
+                        m.type = TypesMessage.DEPLACER_VERS;
+                        m.tuile = tuiles.get(choice - 1);
+                        m.joueurCourant = avCourant;
+                        notifyObservateur(m);
 		} else {
 			System.out.println("Il n'y pas de case possible pour le déplacement autour de vous.");
 		}
-
-
 	}
 
-	public void afficherAssechementsPossibles(ArrayList<Tuile> tuiles, Grille grille) {
+	public void afficherAssechementsPossibles(ArrayList<Tuile> tuiles, Grille grille, Aventurier avCourant) {
 		// Declaration
 		Scanner entre = new Scanner(System.in);
+                Scanner entre2 = new Scanner(System.in);
 		Message m = new Message();
-		int j = 0;
+		int j = 1;
 		int choice;
 
-		// Instruction
-		// Display possible dry
-		System.out.println("Voicie les numéros de case disponible pour l'asséchemment:");
-		if (tuiles.size()!= 0) {
-			for (int i = 0; i < grille.getTuiles().size(); i++) {
-				if (grille.getTuiles().get(i) == tuiles.get(j)) {
-					System.out.println(j + 1 + ": Vers la case" + i + grille.getTuiles().get(i));
-					j++;
-				}
-			}
+			// Instruction
+		// Display possible displacement
+		System.out.println("Voici les numéros de case disponibles pour l'assèhement : ");
+		if (tuiles.size() != 0) {
+                        for (Tuile tuile : tuiles) {
+                            for (int i = 0; i < grille.getTuiles().size(); i++)  {
+                                if (grille.getTuiles().get(i) == tuile) {
+                                    System.out.println(j + " : Assècher la case " + (i + 1) + " : " + grille.getTuiles().get(i).getNom());
+                                    j++;
+                                }
+                            }
+                        }
+                        
+                        for (int i = 0; i < grille.getTuiles().size(); i++)  {
+                            if (grille.getTuiles().get(i) == avCourant.getPosition()) {
+                                System.out.println("\nVous êtes en case " + (i + 1) + " :  " + grille.getTuiles().get(i).getNom());
+                            }
+                        }
 
-			// User choice
-			do {
-				do {
-					System.out.println("Veuillez indiquez le numeros de la vers le quelle vous voulez vous assécher: ");
-					choice = entre.nextInt();
-				} while (choice < 0 && choice >= tuiles.size());
-				System.out.println();
-				System.out.println("Votre choix est d'assecher:" + tuiles.get(choice).getNom());
-				System.out.println("Êtes vous sûr(e) ? oui/non");
-			} while (entre.nextLine() != "oui");
+                    // User choice
+                        do {
+                                do {
+                                        System.out.println("Veuillez indiquer le numéro de la case que vous voulez assècher : ");
+                                        choice = entre.nextInt();
+                                } while (choice < 1 || choice > tuiles.size());
+                                System.out.println();
+                                System.out.println("Votre choix est d'assècher : " + tuiles.get(choice - 1).getNom());
+                                System.out.println("Êtes vous sûr(e) ? (oui/non)");
+                        } while (!entre2.nextLine().equals("oui"));
 
-			m.type = TypesMessage.ASSECHER_VERS;
-			m.tuile = tuiles.get(choice);
+                        m.type = TypesMessage.ASSECHER_VERS;
+                        m.tuile = tuiles.get(choice - 1);
+                        m.joueurCourant = avCourant;
+                        notifyObservateur(m);
+		} else {
+			System.out.println("Il n'y pas de case possible pour l'assèchement autour de vous.");
 		}
-		notifyObservateur(m);
 
 	}
 

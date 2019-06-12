@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class VueAventurier extends Obseve{
+public class VueAventurier extends Observe{
 
 	VueAventurier() {
 
@@ -16,7 +16,7 @@ public class VueAventurier extends Obseve{
 		Message m = new Message();
 
 		// Player Action
-		System.out.println(a.getNom() + ", que voulez vous faire ?");
+		System.out.println(a.getNom() + ", vous êtes " + a.getRole() + ", que voulez vous faire ?");
 		System.out.println();
 		do {
 			do {
@@ -29,11 +29,11 @@ public class VueAventurier extends Obseve{
 								"	| 5: Utiliser carte    |\n" +
 								"	| 6: Fin du tour       |\n" +
 								"	#======================#\n" +
-								"Taper le numéros des actions:"
+								"Taper le numéro de l'action : "
 				);
 				action = entre.nextInt();
 			} while (action != 1 && action != 2 && action != 3 && action != 4 && action != 5 && action != 6);
-			System.out.println("Vous avez renseigné l'action " + action + ", êtes vous sûr ? oui/non");
+			System.out.println("Vous avez renseigné l'action " + action + ", êtes vous sûr ? (oui/non)");
 		} while (!entre2.nextLine().equals("oui"));
 
 
@@ -42,11 +42,12 @@ public class VueAventurier extends Obseve{
 			m.joueurCourant = a;
 		} else if (action == 2) {
 			m.type = TypesMessage.ASSECHER;
+                        m.joueurCourant = a;
 		} else if (action == 3) {
 			do {
-				System.out.println("Veuillez indiquer le nom du joueur avec qui vous voulez echanger:");
+				System.out.println("Veuillez indiquer le nom du joueur avec qui vous voulez échanger:");
 				m.echangeJ = entre.nextLine();
-				System.out.println("Vous avez renseignez " + m.echangeJ + ", êtes vous sûr(e) ? oui/non");
+				System.out.println("Vous avez renseigné " + m.echangeJ + ", êtes vous sûr(e) ? (oui/non)");
 			} while (entre.nextLine() !="oui");
 			m.type = TypesMessage.ECHANGER;
 			m.joueurCourant = a;
@@ -54,7 +55,7 @@ public class VueAventurier extends Obseve{
 			m.type = TypesMessage.RECUPERER_TRESOR;
 			m.joueurCourant = a;
 		} else if (action == 5) {
-			System.out.println("L'avanturier qui veut joué la carte, est-il le joueur  actuel ? oui/non");
+			System.out.println("L'aventurier qui veut jouer la carte est-il le joueur actuel ? (oui/non)");
 			if (entre.nextLine() == "oui") {
 				m.type = TypesMessage.UTILISER_CARTE_COURANT;
 				m.joueurCourant = a;

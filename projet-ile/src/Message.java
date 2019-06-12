@@ -17,4 +17,6 @@ public class Message {
 
     // Player Exchange
     public String echangeJ;
+    
+    public CarteTresor carteTresor;
 }

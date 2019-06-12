@@ -3,36 +3,44 @@ import java.util.*;
 public class Controleur implements Observateur {
 
 	// Attributs
-    
-        // Deck
-        private ArrayList<CarteTresor> pileTresor;
+
+	// Deck
+	private ArrayList<CarteTresor> pileTresor;
 	private ArrayList<CarteTresor> defausseTresor;
 	private ArrayList<CarteInondation> defausseInondation;
 	private ArrayList<CarteInondation> pileInondation;
-        
-        // Grid
+
+	// Grid
 	private Grille grille;
 	private VueGrille vueGrille;
-        
-        // Players
-        private ArrayList<Aventurier> joueurs;
+
+	// Players
+	private ArrayList<Aventurier> joueurs;
 	private VueAventurier vueAventurier;
-        private int nbJoueursInitial;
-        
-         // Settings
+	private int nbJoueursInitial;
+
+	// Settings
 	private VueSettings vueSettings;
-        
-        // Others
+
+	// Others
 	private int niveauDEau;
 	private int nbActions;
-       
 
 	// Constructor
 	Controleur() {
+
+		vueGrille = new VueGrille();
+		vueGrille.addObservateur(this);
+		vueAventurier = new VueAventurier();
+		vueAventurier.addObservateur(this);
+		grille = new Grille();
+
 		// Start by Player Settings
 		vueSettings = new VueSettings();
 		vueSettings.addObservateur(this);
 		vueSettings.settinggame();
+
+
 	}
 
 	public boolean partieFinie(){
@@ -55,26 +63,30 @@ public class Controleur implements Observateur {
 	}
 
 	public void partieEnCours(){
-		// Iteration Game
+
+
 		do{
-			// Player turn
+
 			for(Aventurier a : this.joueurs) {
-				// 3 Actions
-				while (nbActions < 3 ) {
-					vueAventurier.afficher(a);
-					nbActions++;
-				}
+				/*Effectuer de 0 à 2 actions*/
+					while (nbActions < 3 ) {
+						vueAventurier.afficher(a);
+						nbActions++;
+					}
+                                        
+                                        nbActions = 0;
+					/*Tirer 2 cartes trésor*/
 
-				// Pick 2 treasure card
-				for(int j = 0; j < 1; j++){
-					piocherCarteTresor(a);
-				}
-			}
+					for(int j = 0; j < 1; j++){
+						piocherCarteTresor(a);
+					}
 
-			// Pick 2 overflow card
-			for(int k = 0; k < 1; k++){
-				piocherCarteInondation();
 			}
+			/*Tirer 2 cartes inondation*/
+
+    			for(int k = 0; k < 1; k++){
+    				piocherCarteInondation();
+    			}
 
 
 
@@ -91,7 +103,6 @@ public class Controleur implements Observateur {
 
 	public void piocherCarteTresor(Aventurier a) {
 		CarteTresor carte;
-		int test = pileTresor.size();
 		carte = pileTresor.get(1);
 		pileTresor.remove(carte);
 
@@ -121,9 +132,6 @@ public class Controleur implements Observateur {
 	public Tuile getTuile(int coordX, int coordY) {
 		return grille.getGrille()[coordX][coordY];
 	}
-
-
-
 
 	public void melangerPileInondation() {
 		ArrayList<CarteInondation> pileMelange = new ArrayList<>();
@@ -178,7 +186,6 @@ public class Controleur implements Observateur {
 		this.niveauDEau++;
 	}
 
-
 	public void traiterMessage(Message m) {
 		// Messages processing
 		switch (m.type) {
@@ -212,7 +219,7 @@ public class Controleur implements Observateur {
 
 				ArrayList<String> listeJoueursOrd = new ArrayList<>();
 				ArrayList<String> listeJoueursNSP = new ArrayList<>();
-                        
+
 				// Day number testing
 				for (Integer jours : listeJours) {
 					// Player
@@ -282,7 +289,8 @@ public class Controleur implements Observateur {
 				break;
 			case DEPLACER:
 				// Chosen action: Displacement
-				vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille);
+				vueGrille.afficher(grille);
+				vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille, m.joueurCourant);
 				break;
 			case DEPLACER_VERS:
 				// Chosen displacement
@@ -290,30 +298,33 @@ public class Controleur implements Observateur {
 				break;
 			case ASSECHER:
 				// Chosen action: Dry
-				vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille);
+				vueGrille.afficher(grille);
+				vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille, m.joueurCourant);
 				break;
-            case ASSECHER_VERS:
-            	// Chosen dry
-            	m.tuile.assecher();
-            	break;
-            case ECHANGER:
-            	// Chosen action: Exchange
-            	break;
-            case RECUPERER_TRESOR:
-            	// Chosen action: Recover treasure
-            	break;
-            case UTILISER_CARTE_COURANT:
-            	// Chosen action: Using card of current player
-            	break;
-            case UTILISER_CARTE_NON_COURANT:
-            	// Chosen action: Using card of none current player
-            	break;
-            case FIN_TOUR:
-            	// Chosen action: End turn
-            	nbActions = 4;
-            	break;
-            default:
-            	break;
+			case ASSECHER_VERS:
+				// Chosen dry
+				m.tuile.assecher();
+				break;
+			case ECHANGER:
+				// Chosen action: Exchange
+				break;
+			case RECUPERER_TRESOR:
+				// Chosen action: Recover treasure
+				break;
+			case UTILISER_CARTE_COURANT:
+				// Chosen action: Using card of current player
+				break;
+			case UTILISER_CARTE_NON_COURANT:
+				// Chosen action: Using card of none current player
+				break;
+			case FIN_TOUR:
+				// Chosen action: End turn
+				nbActions = 4;
+				break;
+			default:
+				break;
 		}
-    }
+	}
+
+
 }
