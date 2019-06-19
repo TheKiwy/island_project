@@ -53,7 +53,6 @@ public class Grille {
 
 			}
 		}
-
 	}
 
 	public ArrayList<Tuile> getTuilesPraticables() {
@@ -133,4 +132,48 @@ public class Grille {
 		return listeTuiles;
 	}
 
+	public HashMap<Aventurier, ArrayList<Tuile>> getDeplacementsAutres(ArrayList<Aventurier> joueurs) {
+		int i = 0;
+		ArrayList<Aventurier> joueursDeplacables = new ArrayList<>();
+		ArrayList<ArrayList<Tuile>> deplacementsPossiblesJoueur = new ArrayList<>();
+		HashMap<Aventurier, ArrayList<Tuile>> resultat = new HashMap<>();
+
+		// Affichage des possibilités
+		System.out.println("Voici les joueurs déplaçables :");
+		for (Aventurier joueurTeste : joueurs) {
+
+			ArrayList<Tuile> listeTuilesAdj = new ArrayList<>();
+
+			for (Tuile tuileTestee : joueurTeste.getDeplacementsPossibles(this)) {
+				int x = tuileTestee.getCordX();
+				int y = tuileTestee.getCordY();
+				Tuile tuileTestee2;
+
+				for (int xTuile = x - 1; xTuile <= x + 1; xTuile++) {
+					for (int yTuile = y - 1; yTuile <= y + 1; yTuile++) {
+						if ((xTuile >= 0 && xTuile <= 5) && (yTuile >= 0 && yTuile <= 5)) {
+							tuileTestee2 = this.getTuileCoord(xTuile, yTuile);
+							if (tuileTestee2 != null) {
+								if ((tuileTestee2.getEtat() != Utils.EtatTuile.COULEE) && (Math.abs(xTuile - x) != Math.abs(yTuile - y)) && (!listeTuilesAdj.contains(tuileTestee2))) {
+									listeTuilesAdj.add(tuileTestee2);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (!listeTuilesAdj.isEmpty()) {
+				deplacementsPossiblesJoueur.add(listeTuilesAdj);
+				joueursDeplacables.add(joueurTeste);
+				i++;
+			}
+		}
+
+		for (int j = 0; j <= joueursDeplacables.size(); j++) {
+			resultat.put(joueursDeplacables.get(j), deplacementsPossiblesJoueur.get(j));
+		}
+
+		return resultat;
+	}
 }

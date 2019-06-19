@@ -1,9 +1,27 @@
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class VueAventurier extends Observe{
 
-	VueAventurier() {
+	private JFrame window;
+	private ArrayList<JButton> buttons;
 
+	VueAventurier(Aventurier a) {
+		window = new JFrame(a.getNom());
+		buttons = new ArrayList<>();
+		JPanel main = new JPanel(new GridLayout(1,5));
+			for (CarteTresor aCard : a.getCartes()) {
+				JButton card = new JButton(aCard.getType());
+				main.add(card);
+				buttons.add(card);
+			}
+
+		window.add(main);
+	}
+	public void setVisible(Boolean bool) {
+		window.setVisible(bool);
 	}
 
 	public void afficher(Aventurier a) {
@@ -49,7 +67,7 @@ public class VueAventurier extends Observe{
 				m.echangeJ = entre.nextLine();
 				System.out.println("Vous avez renseigné " + m.echangeJ + ", êtes vous sûr(e) ? (oui/non)");
 			} while (entre.nextLine() !="oui");
-			m.type = TypesMessage.ECHANGER;
+			m.type = TypesMessage.DONNER_CARTE;
 			m.joueurCourant = a;
 		} else if (action == 4) {
 			m.type = TypesMessage.RECUPERER_TRESOR;
@@ -94,5 +112,4 @@ public class VueAventurier extends Observe{
 		// TODO - implement VueAventurier.mettreEnArri�re
 		throw new UnsupportedOperationException();
 	}
-
 }

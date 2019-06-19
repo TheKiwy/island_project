@@ -1,13 +1,12 @@
 import java.util.*;
 
-public abstract class Aventurier implements Comparable<Aventurier> {
+public abstract class Aventurier {
 
 	private ArrayList<CarteTresor> cartes;
 	private Tuile position;
 	private ArrayList<Tresor> tresorsPosseder;
 	private String nom;
 	private Utils.Pion pion;
-	private int jours;
 
 	public abstract String getRole();
 
@@ -133,19 +132,7 @@ public abstract class Aventurier implements Comparable<Aventurier> {
 		return cartes.size() >=5;
 	}
 
-	public static final Comparator<Aventurier> Aventurier_Comparator = new Comparator<Aventurier>() {
-		@Override
-		public int compare(Aventurier o1, Aventurier o2) {
-				if (o1.jours == o2.jours) {
-					return 0;
-				} else if (o1.jours < o2.jours || o1.jours == -1) {
-					return -1;
-				} else if (o1.jours > o2.jours) {
-					return 1;
-				} else {
-					return -1;
-				}
-		}
-	};
-
+    public ArrayList<Tuile> getDeplacementSpecial(Grille grille) {
+		return new ArrayList<>();
+	}
 }

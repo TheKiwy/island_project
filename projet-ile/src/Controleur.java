@@ -16,7 +16,7 @@ public class Controleur implements Observateur {
 
 	// Players
 	private ArrayList<Aventurier> joueurs;
-	private VueAventurier vueAventurier;
+	private HashMap<Aventurier, VueAventurier> vueAventurierHashMap;
 	private int nbJoueursInitial;
 
 	// Settings
@@ -25,21 +25,17 @@ public class Controleur implements Observateur {
 	// Others
 	private int niveauDEau;
 	private int nbActions;
+	private boolean PilotePeutUtiliserActionSpeciale;
 
 	// Constructor
 	Controleur() {
-
-		vueGrille = new VueGrille();
-		vueGrille.addObservateur(this);
-		vueAventurier = new VueAventurier();
-		vueAventurier.addObservateur(this);
 		grille = new Grille();
+		vueGrille = new VueGrille(grille);
 
 		// Start by Player Settings
 		vueSettings = new VueSettings();
 		vueSettings.addObservateur(this);
-		vueSettings.settinggame();
-
+		vueSettings.setVisible(true);
 
 	}
 
@@ -70,7 +66,7 @@ public class Controleur implements Observateur {
 			for(Aventurier a : this.joueurs) {
 				/*Effectuer de 0 à 2 actions*/
 					while (nbActions < 3 ) {
-						vueAventurier.afficher(a);
+						vueAventurierHashMap.get(a);
 						nbActions++;
 					}
                                         
@@ -191,14 +187,14 @@ public class Controleur implements Observateur {
 		switch (m.type) {
 
 			case DEMARRER_PARTIE:
-				// View instantiation
-				vueGrille = new VueGrille();
-				vueGrille.addObservateur(this);
-				vueAventurier = new VueAventurier();
-				vueAventurier.addObservateur(this);
-
 				// Grid Instantiation
 				this.grille = new Grille();
+
+				// View instantiation
+				vueAventurierHashMap = new HashMap<>();
+
+
+
 
 				// Player list initialization
 				ArrayList<Aventurier> roles = new ArrayList<>();
@@ -220,8 +216,26 @@ public class Controleur implements Observateur {
 				ArrayList<String> listeJoueursOrd = new ArrayList<>();
 				ArrayList<String> listeJoueursNSP = new ArrayList<>();
 
-
-
+				// Day number testing
+				for (Integer jours : listeJours) {
+					// Player
+					for (String joueur : m.joueurs.keySet()) {
+						// Matching day number
+						if (m.joueurs.get(joueur) == jours) {
+							// Player doesn't exist
+							if (!listeJoueursOrd.contains(joueur)) {
+								// If he never or he forgot gone on an island
+								if (jours == -1) {
+									// Add him at the end of the list
+									listeJoueursNSP.add(joueur);
+								} else {
+									// Add him at the start of the list
+									listeJoueursOrd.add(joueur);
+								}
+							}
+						}
+					}
+				}
 				listeJoueursOrd.addAll(listeJoueursNSP);
 				this.joueurs = new ArrayList<>();
 				for (String nomJ : listeJoueursOrd) {
@@ -266,6 +280,17 @@ public class Controleur implements Observateur {
 				defausseInondation = new ArrayList<>();
 				Collections.shuffle(pileInondation);
 
+				// Player View instantiation
+				for (Aventurier aPlayer : joueurs) {
+					for (int i = 0; i<=1; i++) {
+						piocherCarteTresor(aPlayer);
+					}
+					vueAventurierHashMap.put(aPlayer, new VueAventurier(aPlayer));
+					vueAventurierHashMap.get(aPlayer).addObservateur(this);
+
+				}
+
+				vueGrille.visible();
 				// Game lunch
 				this.partieEnCours();
 				break;
@@ -287,7 +312,22 @@ public class Controleur implements Observateur {
 				// Chosen dry
 				m.tuile.assecher();
 				break;
-			case ECHANGER:
+			case ACTION_SPECIALE :
+				if (m.joueurCourant.getRole() == "Pilote"){
+					if (this.PilotePeutUtiliserActionSpeciale){
+						vueGrille.afficher(grille);
+						vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementSpecial(grille), grille, m.joueurCourant);
+						this.PilotePeutUtiliserActionSpeciale = false;
+					}
+				} else if (m.joueurCourant.getRole() == "Navigateur"){
+					// A COMPLETER //
+					//     O
+					//   O O O
+					// O O X O O
+					//   O O O
+					//     O
+				}
+			case DONNER_CARTE:
 				// Chosen action: Exchange
 				break;
 			case RECUPERER_TRESOR:
