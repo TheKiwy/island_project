@@ -54,25 +54,25 @@ public abstract class Aventurier {
 	}
 
 	public ArrayList<Tuile> getAssechementsPossibles(Grille g) {
-            int x = this.position.getCordX();
-            int y = this.position.getCordY();
-            ArrayList<Tuile> listeTuiles = new ArrayList<>();
-            Tuile tuileTestee;
-            
-            for (int xTuile = x - 1; xTuile <= x + 1; xTuile++) {
-                for (int yTuile = y - 1; yTuile <= y + 1; yTuile++) {
-                    if ((xTuile >= 0 && xTuile <= 5) && (yTuile >= 0 && yTuile <= 5)) {
-                        tuileTestee = g.getTuileCoord(xTuile, yTuile);
-                        if (tuileTestee != null) {
-                            if ((tuileTestee.getEtat() == Utils.EtatTuile.INONDEE) && (Math.abs(xTuile - x) != Math.abs(yTuile - y))) {
-                                listeTuiles.add(tuileTestee);
-                            }
-                        }
-                    }
-                }
-            }
-            return listeTuiles;
-        }
+		int x = this.position.getCordX();
+		int y = this.position.getCordY();
+		ArrayList<Tuile> listeTuiles = new ArrayList<>();
+		Tuile tuileTestee;
+
+		for (int xTuile = x - 1; xTuile <= x + 1; xTuile++) {
+			for (int yTuile = y - 1; yTuile <= y + 1; yTuile++) {
+				if ((xTuile >= 0 && xTuile <= 5) && (yTuile >= 0 && yTuile <= 5)) {
+					tuileTestee = g.getTuileCoord(xTuile, yTuile);
+					if (tuileTestee != null) {
+						if ((tuileTestee.getEtat() == Utils.EtatTuile.INONDEE) && !((Math.abs(xTuile - x) == 1) && (Math.abs(yTuile - y) == 1))) {
+							listeTuiles.add(tuileTestee);
+						}
+					}
+				}
+			}
+		}
+		return listeTuiles;
+	}
 
 	public Tuile getPosition(){
 		return position;
@@ -80,7 +80,7 @@ public abstract class Aventurier {
 
 
 	public ArrayList<Aventurier> getReceveursPossibles() {
-		ArrayList<Aventurier> memCase = this.position.getJoueurs();
+		ArrayList<Aventurier> memCase = this.getPosition().getJoueurs();
 		memCase.remove(this);
 		return memCase;
 	}
@@ -107,7 +107,7 @@ public abstract class Aventurier {
 		defausse.add(carte);
 	}
 
-	public void recupererTresor(Tresor tresor) {
+	public boolean verifierTresor(TypeTresor tresor) {
 
 		ArrayList<CarteTresor> morceauxTresors = new ArrayList<>();
 		int i=0;
@@ -116,15 +116,17 @@ public abstract class Aventurier {
 				morceauxTresors.add(carte);
 			}
 		}
+
 		for (CarteTresor carte : morceauxTresors) {
-			if (carte.getTypeTresor() == tresor.getType()){
+			if (carte.getTypeTresor() == tresor){
 				i += 1;
 			}
 		}
-		if (i >= 4){
-			this.tresorsPosseder.add(tresor);
-		}
+		return i >= 4;
+	}
 
+	public void ajouterTresor(Tresor tresor){
+		this.tresorsPosseder.add(tresor);
 	}
 
 

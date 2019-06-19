@@ -132,7 +132,7 @@ public class Grille {
 		return listeTuiles;
 	}
 
-	public HashMap<Aventurier, ArrayList<Tuile>> getDeplacementsAutres(ArrayList<Aventurier> joueurs) {
+	public HashMap<Aventurier, ArrayList<Tuile>> getDeplacementsAutres(Aventurier navi, ArrayList<Aventurier> joueurs) {
 		int i = 0;
 		ArrayList<Aventurier> joueursDeplacables = new ArrayList<>();
 		ArrayList<ArrayList<Tuile>> deplacementsPossiblesJoueur = new ArrayList<>();
@@ -154,7 +154,7 @@ public class Grille {
 						if ((xTuile >= 0 && xTuile <= 5) && (yTuile >= 0 && yTuile <= 5)) {
 							tuileTestee2 = this.getTuileCoord(xTuile, yTuile);
 							if (tuileTestee2 != null) {
-								if ((tuileTestee2.getEtat() != Utils.EtatTuile.COULEE) && (Math.abs(xTuile - x) != Math.abs(yTuile - y)) && (!listeTuilesAdj.contains(tuileTestee2))) {
+								if ((tuileTestee2.getEtat() != Utils.EtatTuile.COULEE) && !((Math.abs(xTuile - x) == 1) && (Math.abs(yTuile - y) == 1)) && !(listeTuilesAdj.contains(tuileTestee2)) && (!tuileTestee2.equals(joueurTeste.getPosition()))) {
 									listeTuilesAdj.add(tuileTestee2);
 								}
 							}
@@ -163,14 +163,14 @@ public class Grille {
 				}
 			}
 
-			if (!listeTuilesAdj.isEmpty()) {
+			if ((!listeTuilesAdj.isEmpty()) && joueurTeste != navi){
 				deplacementsPossiblesJoueur.add(listeTuilesAdj);
 				joueursDeplacables.add(joueurTeste);
 				i++;
 			}
 		}
 
-		for (int j = 0; j <= joueursDeplacables.size(); j++) {
+		for (int j = 0; j < joueursDeplacables.size(); j++) {
 			resultat.put(joueursDeplacables.get(j), deplacementsPossiblesJoueur.get(j));
 		}
 

@@ -16,7 +16,6 @@ public class Message {
     public Aventurier joueurCourant;
 
     // Player Exchange
-    public String echangeJ;
-    
-    public CarteTresor carteTresor;
+    public Aventurier receveur;
+    public int numCarteTresor;
 }

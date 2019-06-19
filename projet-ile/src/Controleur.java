@@ -10,6 +10,10 @@ public class Controleur implements Observateur {
 	private ArrayList<CarteInondation> defausseInondation;
 	private ArrayList<CarteInondation> pileInondation;
 
+	// Treasure
+	private ArrayList<Tresor> listeTresor;
+	private boolean partieGagnee;
+
 	// Grid
 	private Grille grille;
 	private VueGrille vueGrille;
@@ -40,18 +44,19 @@ public class Controleur implements Observateur {
 	}
 
 	public boolean partieFinie(){
+
 		if(joueurs.size() < nbJoueursInitial){
 			return true;
 		}else if(niveauDEau >= 10){
 			return true;
-		}else if(grille.getTuiles().get(16).getEtat() == Utils.EtatTuile.COULEE){
+		}else if(grille.getTuileUnique(Role.heliport).getEtat() == Utils.EtatTuile.COULEE){
 			return true;
-		}else if(grille.getTuiles().get(15).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(22).getEtat() == Utils.EtatTuile.COULEE ||
-				grille.getTuiles().get(0).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(6).getEtat() == Utils.EtatTuile.COULEE ||
-				grille.getTuiles().get(5).getEtat() == Utils.EtatTuile.COULEE &&grille.getTuiles().get(11).getEtat() == Utils.EtatTuile.COULEE ||
-				grille.getTuiles().get(8).getEtat() == Utils.EtatTuile.COULEE && grille.getTuiles().get(18).getEtat() == Utils.EtatTuile.COULEE)
-		{
-			System.out.println("Un des trésors a coulé ");
+		}else if(grille.getTuileTresor(Role.recupCalice).get(0).getEtat() == Utils.EtatTuile.COULEE && grille.getTuileTresor(Role.recupCalice).get(1).getEtat() == Utils.EtatTuile.COULEE ||
+				grille.getTuileTresor(Role.recupCristal).get(0).getEtat() == Utils.EtatTuile.COULEE && grille.getTuileTresor(Role.recupCristal).get(1).getEtat() == Utils.EtatTuile.COULEE ||
+				grille.getTuileTresor(Role.recupPierre).get(0).getEtat() == Utils.EtatTuile.COULEE && grille.getTuileTresor(Role.recupPierre).get(1).getEtat() == Utils.EtatTuile.COULEE ||
+				grille.getTuileTresor(Role.recupZephyr).get(0).getEtat() == Utils.EtatTuile.COULEE && grille.getTuileTresor(Role.recupZephyr).get(1).getEtat() == Utils.EtatTuile.COULEE){
+			return true;
+		}else if(partieGagnee){
 			return true;
 		}else{
 			return false;
@@ -66,11 +71,10 @@ public class Controleur implements Observateur {
 			for(Aventurier a : this.joueurs) {
 				/*Effectuer de 0 à 2 actions*/
 					while (nbActions < 3 ) {
-						vueAventurierHashMap.get(a);
-						nbActions++;
+						vueAventurierHashMap.get(a).setVisible(true);
 					}
-                                        
-                                        nbActions = 0;
+
+					nbActions = 0;
 					/*Tirer 2 cartes trésor*/
 
 					for(int j = 0; j < 1; j++){
@@ -99,7 +103,10 @@ public class Controleur implements Observateur {
 
 	public void piocherCarteTresor(Aventurier a) {
 		CarteTresor carte;
-		carte = pileTresor.get(1);
+		if (pileTresor.isEmpty()) {
+			melangerPileTresor();
+		}
+		carte = pileTresor.get(0);
 		pileTresor.remove(carte);
 
 		if ("CarteMonteeEaux".equals(carte.getType())) {
@@ -145,9 +152,8 @@ public class Controleur implements Observateur {
 		pileTresor = pileMelange;
 	}
 
-	public int pileTresorVide() {
-		// TODO - implement Controleur.pileTresorVide
-		throw new UnsupportedOperationException();
+	public boolean pileTresorVide() {
+		return pileTresor.isEmpty();
 	}
 
 	public void donnerCarte() {
@@ -193,7 +199,13 @@ public class Controleur implements Observateur {
 				// View instantiation
 				vueAventurierHashMap = new HashMap<>();
 
-
+				// Add treasure
+				listeTresor = new ArrayList<>();
+				this.partieGagnee = false;
+				listeTresor.add(new Tresor(TypeTresor.calice));
+				listeTresor.add(new Tresor(TypeTresor.cristal));
+				listeTresor.add(new Tresor(TypeTresor.pierre));
+				listeTresor.add(new Tresor(TypeTresor.zephyr));
 
 
 				// Player list initialization
@@ -289,55 +301,108 @@ public class Controleur implements Observateur {
 					vueAventurierHashMap.get(aPlayer).addObservateur(this);
 
 				}
-
 				vueGrille.visible();
 				// Game lunch
 				this.partieEnCours();
 				break;
 			case DEPLACER:
 				// Chosen action: Displacement
-				vueGrille.afficher(grille);
+				vueGrille.changerEtatActions(0);
+				vueGrille.afficherDeplacer();
 				vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille, m.joueurCourant);
 				break;
 			case DEPLACER_VERS:
 				// Chosen displacement
+				vueGrille.desactiverGrille();
 				m.joueurCourant.setPosition(m.tuile);
+				nbActions++;
+				vueGrille.changerEtatActions(1);
 				break;
 			case ASSECHER:
 				// Chosen action: Dry
-				vueGrille.afficher(grille);
+				vueGrille.changerEtatActions(0);
+				vueGrille.afficherAssecher();
 				vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille, m.joueurCourant);
 				break;
 			case ASSECHER_VERS:
 				// Chosen dry
+				vueGrille.desactiverGrille();
 				m.tuile.assecher();
+				nbActions++;
+				vueGrille.changerEtatActions(1);
+				break;
+			case ASSECHER_SPECIAL:
+				for (int i=0; i<=1;i++) {
+					vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille),grille, m.joueurCourant);
+				}
+				break;
+			case DON_DE_CARTE:
+				// Chosen action: Gift of card
+				if (m.joueurCourant.getRole() == "Messager"){
+					ArrayList<Aventurier> receveurspossibles = joueurs;
+					receveurspossibles.remove(m.joueurCourant);
+					vueAventurierHashMap.get(m.joueurCourant).afficherDonCarte(receveurspossibles, m.joueurCourant);
+				} else {
+					vueGrille.afficherDonCarte(m.joueurCourant.getReceveursPossibles(), m.joueurCourant);
+				}
 				break;
 			case ACTION_SPECIALE :
 				if (m.joueurCourant.getRole() == "Pilote"){
 					if (this.PilotePeutUtiliserActionSpeciale){
-						vueGrille.afficher(grille);
 						vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementSpecial(grille), grille, m.joueurCourant);
 						this.PilotePeutUtiliserActionSpeciale = false;
 					}
 				} else if (m.joueurCourant.getRole() == "Navigateur"){
-					// A COMPLETER //
-					//     O
-					//   O O O
-					// O O X O O
-					//   O O O
-					//     O
+					vueAventurierHashMap.get(m.joueurCourant).afficherAutresJoueurs(m.joueurCourant, grille.getDeplacementsAutres(m.joueurCourant, this.getJoueurs()), grille);
 				}
 			case DONNER_CARTE:
-				// Chosen action: Exchange
+				// Chosen action : give card
+				m.receveur.ajouterCarteTresor(m.joueurCourant.getCartes().get(m.numCarteTresor));
+				m.joueurCourant.getCartes().remove(m.numCarteTresor);
 				break;
 			case RECUPERER_TRESOR:
 				// Chosen action: Recover treasure
+				if(m.joueurCourant.verifierTresor(TypeTresor.calice)){
+					m.joueurCourant.ajouterTresor(this.listeTresor.get(0));
+					this.listeTresor.remove(0);
+				}else if(m.joueurCourant.verifierTresor(TypeTresor.cristal)){
+					m.joueurCourant.ajouterTresor(this.listeTresor.get(1));
+					this.listeTresor.remove(1);
+				}else if(m.joueurCourant.verifierTresor(TypeTresor.pierre)){
+					m.joueurCourant.ajouterTresor(this.listeTresor.get(2));
+					this.listeTresor.remove(2);
+				}else if(m.joueurCourant.verifierTresor(TypeTresor.zephyr)){
+					m.joueurCourant.ajouterTresor(this.listeTresor.get(3));
+					this.listeTresor.remove(3);
+				}
 				break;
 			case UTILISER_CARTE_COURANT:
 				// Chosen action: Using card of current player
 				break;
 			case UTILISER_CARTE_NON_COURANT:
 				// Chosen action: Using card of none current player
+				break;
+			case CARTE_HELICOPTER:
+				boolean tousHeliport = false;
+				boolean possedeCarteHelicopter = false;
+
+				for(CarteTresor c : m.joueurCourant.getCartes()){
+					if(c.getType() == "CarteHelicopter"){
+						possedeCarteHelicopter = true;
+					}
+				}
+
+				for(Aventurier a : this.getAventuriers()){
+					if(a.getPosition().getRole() == Role.heliport){
+						tousHeliport = true;
+					}else{
+						tousHeliport =  false;
+					}
+				}
+
+				if(this.listeTresor.size() == 0 && tousHeliport && possedeCarteHelicopter){
+					this.partieGagnee = true;
+				}
 				break;
 			case FIN_TOUR:
 				// Chosen action: End turn
