@@ -220,26 +220,8 @@ public class Controleur implements Observateur {
 				ArrayList<String> listeJoueursOrd = new ArrayList<>();
 				ArrayList<String> listeJoueursNSP = new ArrayList<>();
 
-				// Day number testing
-				for (Integer jours : listeJours) {
-					// Player
-					for (String joueur : m.joueurs.keySet()) {
-						// Matching day number
-						if (m.joueurs.get(joueur) == jours) {
-							// Player doesn't exist
-							if (!listeJoueursOrd.contains(joueur)) {
-								// If he never or he forgot gone on an island
-								if (jours == -1) {
-									// Add him at the end of the list
-									listeJoueursNSP.add(joueur);
-								} else {
-									// Add him at the start of the list
-									listeJoueursOrd.add(joueur);
-								}
-							}
-						}
-					}
-				}
+
+
 				listeJoueursOrd.addAll(listeJoueursNSP);
 				this.joueurs = new ArrayList<>();
 				for (String nomJ : listeJoueursOrd) {
