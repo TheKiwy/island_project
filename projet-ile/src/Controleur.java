@@ -22,6 +22,7 @@ public class Controleur implements Observateur {
 	private ArrayList<Aventurier> joueurs;
 	private HashMap<Aventurier, VueAventurier> vueAventurierHashMap;
 	private int nbJoueursInitial;
+	private int joueurCourant;
 
 	// Settings
 	private VueSettings vueSettings;
@@ -33,8 +34,7 @@ public class Controleur implements Observateur {
 
 	// Constructor
 	Controleur() {
-		grille = new Grille();
-		vueGrille = new VueGrille(grille);
+
 
 		// Start by Player Settings
 		vueSettings = new VueSettings();
@@ -63,34 +63,22 @@ public class Controleur implements Observateur {
 		}
 	}
 
-	public void partieEnCours(){
+	public void actionFinie() {
+		nbActions++;
+		if (nbActions >= 3) {
 
+			piocherCarteTresor(joueurs.get(joueurCourant));
+			piocherCarteTresor(joueurs.get(joueurCourant));
 
-		do{
-
-			for(Aventurier a : this.joueurs) {
-				/*Effectuer de 0 à 2 actions*/
-					while (nbActions < 3 ) {
-						vueAventurierHashMap.get(a).setVisible(true);
-					}
-
-					nbActions = 0;
-					/*Tirer 2 cartes trésor*/
-
-					for(int j = 0; j < 1; j++){
-						piocherCarteTresor(a);
-					}
-
+			for (int i=1; i<= niveauDEau; i++) {
+				piocherCarteInondation();
 			}
-			/*Tirer 2 cartes inondation*/
-
-    			for(int k = 0; k < 1; k++){
-    				piocherCarteInondation();
-    			}
-
-
-
-		}while(!partieFinie());
+			joueurCourant =  ((joueurCourant+1)%nbJoueursInitial);
+			nbActions =0;
+			if (partieFinie()) {
+				System.out.println("Fini");
+			}
+		}
 	}
 
 	public Grille getGrille() {
@@ -214,7 +202,7 @@ public class Controleur implements Observateur {
 				roles.add(new Ingenieur(grille.getTuileUnique(Role.porteRouge)));
 				roles.add(new Messager(grille.getTuileUnique(Role.porteViolette)));
 				roles.add(new Navigateur(grille.getTuileUnique(Role.porteJaune)));
-				roles.add(new Pilote(grille.getTuileUnique(Role.porteBleue)));
+				roles.add(new Pilote(grille.getTuileUnique(Role.heliport)));
 				roles.add(new Plongeur(grille.getTuileUnique(Role.porteNoire)));
 
 				Utils.melangerAventuriers(roles);
@@ -301,80 +289,96 @@ public class Controleur implements Observateur {
 					vueAventurierHashMap.get(aPlayer).addObservateur(this);
 
 				}
-				vueGrille.visible();
+
+				vueGrille = new VueGrille(grille);
+				vueGrille.addObservateur(this);
+
 				// Game lunch
-				this.partieEnCours();
+				joueurCourant = 0;
+				vueGrille.visible();
 				break;
 			case DEPLACER:
 				// Chosen action: Displacement
+				
 				vueGrille.changerEtatActions(0);
 				vueGrille.afficherDeplacer();
-				vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementsPossibles(grille), grille, m.joueurCourant);
+				System.out.println(joueurs.get(joueurCourant).getRole());
+				vueGrille.afficherDeplacementsPossibles(joueurs.get(joueurCourant).getDeplacementsPossibles(grille), grille, joueurs.get(joueurCourant));
+
 				break;
 			case DEPLACER_VERS:
 				// Chosen displacement
 				vueGrille.desactiverGrille();
-				m.joueurCourant.setPosition(m.tuile);
-				nbActions++;
+				joueurs.get(joueurCourant).setPosition(m.tuile);
+				actionFinie();
 				vueGrille.changerEtatActions(1);
 				break;
 			case ASSECHER:
 				// Chosen action: Dry
 				vueGrille.changerEtatActions(0);
 				vueGrille.afficherAssecher();
-				vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille), grille, m.joueurCourant);
+				vueGrille.afficherAssechementsPossibles(joueurs.get(joueurCourant).getAssechementsPossibles(grille), grille, joueurs.get(joueurCourant), true);
 				break;
 			case ASSECHER_VERS:
 				// Chosen dry
 				vueGrille.desactiverGrille();
 				m.tuile.assecher();
-				nbActions++;
+				if (m.actionPlus) {
+					actionFinie();
+				}
 				vueGrille.changerEtatActions(1);
 				break;
 			case ASSECHER_SPECIAL:
-				for (int i=0; i<=1;i++) {
-					vueGrille.afficherAssechementsPossibles(m.joueurCourant.getAssechementsPossibles(grille),grille, m.joueurCourant);
-				}
+
+				vueGrille.afficherAssechementsPossibles(joueurs.get(joueurCourant).getAssechementsPossibles(grille),grille, joueurs.get(joueurCourant), false);
+				vueGrille.afficherAssechementsPossibles(joueurs.get(joueurCourant).getAssechementsPossibles(grille),grille, joueurs.get(joueurCourant), true);
+
 				break;
 			case DON_DE_CARTE:
 				// Chosen action: Gift of card
-				if (m.joueurCourant.getRole() == "Messager"){
+				if (joueurs.get(joueurCourant).getRole() == "Messager"){
 					ArrayList<Aventurier> receveurspossibles = joueurs;
-					receveurspossibles.remove(m.joueurCourant);
-					vueAventurierHashMap.get(m.joueurCourant).afficherDonCarte(receveurspossibles, m.joueurCourant);
+					receveurspossibles.remove(joueurs.get(joueurCourant));
+					vueAventurierHashMap.get(joueurs.get(joueurCourant)).afficherDonCarte(receveurspossibles, joueurs.get(joueurCourant));
 				} else {
-					vueGrille.afficherDonCarte(m.joueurCourant.getReceveursPossibles(), m.joueurCourant);
+					vueGrille.afficherDonCarte(joueurs.get(joueurCourant).getReceveursPossibles(), joueurs.get(joueurCourant));
 				}
 				break;
 			case ACTION_SPECIALE :
-				if (m.joueurCourant.getRole() == "Pilote"){
+				if (joueurs.get(joueurCourant).getRole() == "Pilote"){
 					if (this.PilotePeutUtiliserActionSpeciale){
-						vueGrille.afficherDeplacementsPossibles(m.joueurCourant.getDeplacementSpecial(grille), grille, m.joueurCourant);
+						vueGrille.afficherDeplacementsPossibles(joueurs.get(joueurCourant).getDeplacementSpecial(grille), grille, joueurs.get(joueurCourant));
 						this.PilotePeutUtiliserActionSpeciale = false;
 					}
-				} else if (m.joueurCourant.getRole() == "Navigateur"){
-					vueAventurierHashMap.get(m.joueurCourant).afficherAutresJoueurs(m.joueurCourant, grille.getDeplacementsAutres(m.joueurCourant, this.getJoueurs()), grille);
+				} else if (joueurs.get(joueurCourant).getRole() == "Navigateur"){
+					vueAventurierHashMap.get(joueurs.get(joueurCourant)).afficherAutresJoueurs(joueurs.get(joueurCourant), grille.getDeplacementsAutres(joueurs.get(joueurCourant), this.getJoueurs()), grille);
 				}
 			case DONNER_CARTE:
 				// Chosen action : give card
-				m.receveur.ajouterCarteTresor(m.joueurCourant.getCartes().get(m.numCarteTresor));
-				m.joueurCourant.getCartes().remove(m.numCarteTresor);
+				m.receveur.ajouterCarteTresor(joueurs.get(joueurCourant).getCartes().get(m.numCarteTresor));
+				joueurs.get(joueurCourant).getCartes().remove(m.numCarteTresor);
+				actionFinie();
 				break;
 			case RECUPERER_TRESOR:
 				// Chosen action: Recover treasure
-				if(m.joueurCourant.verifierTresor(TypeTresor.calice)){
-					m.joueurCourant.ajouterTresor(this.listeTresor.get(0));
+				if(joueurs.get(joueurCourant).verifierTresor(TypeTresor.calice)){
+					joueurs.get(joueurCourant).ajouterTresor(this.listeTresor.get(0));
 					this.listeTresor.remove(0);
-				}else if(m.joueurCourant.verifierTresor(TypeTresor.cristal)){
-					m.joueurCourant.ajouterTresor(this.listeTresor.get(1));
+					actionFinie();
+				}else if(joueurs.get(joueurCourant).verifierTresor(TypeTresor.cristal)){
+					joueurs.get(joueurCourant).ajouterTresor(this.listeTresor.get(1));
 					this.listeTresor.remove(1);
-				}else if(m.joueurCourant.verifierTresor(TypeTresor.pierre)){
-					m.joueurCourant.ajouterTresor(this.listeTresor.get(2));
+					actionFinie();
+				}else if(joueurs.get(joueurCourant).verifierTresor(TypeTresor.pierre)){
+					joueurs.get(joueurCourant).ajouterTresor(this.listeTresor.get(2));
 					this.listeTresor.remove(2);
-				}else if(m.joueurCourant.verifierTresor(TypeTresor.zephyr)){
-					m.joueurCourant.ajouterTresor(this.listeTresor.get(3));
+					actionFinie();
+				}else if(joueurs.get(joueurCourant).verifierTresor(TypeTresor.zephyr)){
+					joueurs.get(joueurCourant).ajouterTresor(this.listeTresor.get(3));
 					this.listeTresor.remove(3);
+					actionFinie();
 				}
+
 				break;
 			case UTILISER_CARTE_COURANT:
 				// Chosen action: Using card of current player
@@ -386,7 +390,7 @@ public class Controleur implements Observateur {
 				boolean tousHeliport = false;
 				boolean possedeCarteHelicopter = false;
 
-				for(CarteTresor c : m.joueurCourant.getCartes()){
+				for(CarteTresor c : joueurs.get(joueurCourant).getCartes()){
 					if(c.getType() == "CarteHelicopter"){
 						possedeCarteHelicopter = true;
 					}

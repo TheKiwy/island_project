@@ -18,4 +18,7 @@ public class Message {
     // Player Exchange
     public Aventurier receveur;
     public int numCarteTresor;
+
+
+    public boolean actionPlus;
 }

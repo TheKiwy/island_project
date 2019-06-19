@@ -63,13 +63,12 @@ public class VueGrille extends Observe{
         JButton tuileij;
         for (int i = 0; i < 6; i++) {
             for(int j = 0; j < 6; j++) {
-
-                s = grille.getGrille()[i][j];
-                if (grille.getGrille()[i][j] != null) {
-                    nomTuile = s.getNom();
+                Tuile t = grille.getTuileCoord(i, j);
+                if (t != null) {
+                    nomTuile = t.getNom();
                     tuileij = new JButton(nomTuile);
                     boutons.add(tuileij);
-                    Tuile t = grille.getTuileCoord(i, j);
+
                     tuileij.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -260,12 +259,12 @@ public class VueGrille extends Observe{
             j.setEnabled(false);
         }
     }
-    public void afficherAssechementsPossibles(ArrayList<Tuile> tuiles, Grille grille, Aventurier avCourant) {
+    public void afficherAssechementsPossibles(ArrayList<Tuile> tuiles, Grille grille, Aventurier avCourant, boolean b) {
         // Declaration
 
         Message m = new Message();
 
-
+        m.actionPlus = b;
         // Instruction
         // Display possible displacement
 
@@ -343,7 +342,52 @@ public class VueGrille extends Observe{
             notifyObservateur(m);
         }
     }
+    public void afficherDeplacementsPossibles2(ArrayList<Tuile> tuiles, Grille grille, Aventurier avCourant) {
+        // Declaration
+        Scanner entre = new Scanner(System.in);
+        Scanner entre2 = new Scanner(System.in);
+        Message m = new Message();
+        int j = 1;
+        int choice;
 
+        // Instruction
+        // Display possible displacement
+        System.out.println("Voici les numéros de case disponibles pour le déplacement : ");
+        if (tuiles.size() != 0) {
+            for (Tuile tuile : tuiles) {
+                for (int i = 0; i < grille.getTuiles().size(); i++)  {
+                    if (grille.getTuiles().get(i) == tuile) {
+                        System.out.println(j + " : Vers la case " + (i + 1) + " : " + grille.getTuiles().get(i).getNom());
+                        j++;
+                    }
+                }
+            }
+
+            for (int i = 0; i < grille.getTuiles().size(); i++)  {
+                if (grille.getTuiles().get(i) == avCourant.getPosition()) {
+                    System.out.println("\nVous êtes en case " + (i + 1) + " :  " + grille.getTuiles().get(i).getNom());
+                }
+            }
+
+            // User choice
+            do {
+                do {
+                    System.out.println("Veuillez indiquer le numéro de la case vers laquelle vous voulez vous déplacer : ");
+                    choice = entre.nextInt();
+                } while (choice < 1 || choice > tuiles.size());
+                System.out.println();
+                System.out.println("Votre choix est de vous déplacer vers : " + tuiles.get(choice - 1).getNom());
+                System.out.println("Êtes vous sûr(e) ? (oui/non)");
+            } while (!entre2.nextLine().equals("oui"));
+
+            m.type = TypesMessage.DEPLACER_VERS;
+            m.tuile = tuiles.get(choice - 1);
+            m.joueurCourant = avCourant;
+            notifyObservateur(m);
+        } else {
+            System.out.println("Il n'y pas de case possible pour le déplacement autour de vous.");
+        }
+    }
 
 
 }

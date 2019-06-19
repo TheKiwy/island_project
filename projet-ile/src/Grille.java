@@ -3,11 +3,12 @@ import java.util.*;
 
 public class Grille {
 
-	private ArrayList<Tuile> tuiles = new ArrayList<>();
+	private ArrayList<Tuile> tuiles;
 
 	private Tuile[][] grille;
 
 	public Grille() {
+		tuiles = new ArrayList<>();
 
 		tuiles.add(new Tuile(Role.recupCristal, "La Caverne des Ombres"));
 		tuiles.add(new Tuile(Role.aucun, "Le Val du Crépuscule"));
@@ -71,15 +72,6 @@ public class Grille {
 	}
 
 	public ArrayList<Tuile> getTuiles() {
-		Tuile tuile;
-		ArrayList<Tuile> tuiles = new ArrayList<>();
-		for (int i = 0; i < 6; i++) {
-			for (int j = 0; j < 6; j++) {
-				if (grille[i][j] != null) {
-					tuiles.add(grille[i][j]);
-				}
-			}
-		}
 		return tuiles;
 	}
 
